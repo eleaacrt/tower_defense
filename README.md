@@ -1,1 +1,1 @@
-# tower_defense
+# OpenGLTemplate
