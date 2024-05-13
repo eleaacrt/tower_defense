@@ -1,0 +1,20 @@
+ITD
+
+# image :
+map images/map.png
+# blanc (chemins):
+path 255 255 255
+# bleu (entrée)
+in 0 0 255
+# rouge (sortie)
+out 255 0 0
+#graphe
+graph 8
+node 0 1 1 1
+node 1 6 1 2
+node 2 6 3 3
+node 3 4 3 4
+node 4 4 4 5
+node 5 2 4 6
+node 6 2 6 7
+node 7 6 6
