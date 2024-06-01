@@ -1,13 +1,13 @@
 ITD
 
 # image :
-map images/map.png
+map map.png
 # blanc (chemins):
 path 255 255 255
 # bleu (entrée)
 in 0 0 255
 # rouge (sortie)
-out 255 0 0
+out 254 0 0
 #graphe
 graph 8
 node 0 1 1 1

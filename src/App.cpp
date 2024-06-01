@@ -1,5 +1,3 @@
-#include "App.hpp"
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <img/img.hpp>
@@ -10,26 +8,31 @@
 #include "utils.hpp"
 #include "GLHelpers.hpp"
 
-#include "graph.hpp"
+#include "App.hpp"
+#include "Map.hpp"
+#include "Config/ConfigMap.hpp"
+#include "Config/ConfigTarget.hpp"
+#include "Target.hpp"
 
-
-App::App() : _previousTime(0.0), _viewSize(2.0)
+App::App() : _previousTime(0.0), _viewSize(10)
 {
     // load what needs to be loaded here (for example textures)
-    img::Image map{img::load(make_absolute_path("images/map.png", true), 3, true)};
-    _texture = loadTexture(map);
+    // img::Image map{img::load(make_absolute_path("images/map.png", true), 3, true)};
+    // _texture = loadTexture(map);
 }
 
 void App::setup()
 {
     // Set the clear color to a nice blue
-    glClearColor(0.2f, 0.5f, 0.2f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
     // Setup the text renderer with blending enabled and white text color
     // TextRenderer.ResetFont();
     // TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
     // TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     // TextRenderer.EnableBlending(true);
+
+    map.tiles = map.get_Tiles();
 }
 
 void App::update()
@@ -51,34 +54,12 @@ void App::render()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, _angle);
-    draw_quad_with_texture(_texture);
-    glPopMatrix();
+    map.draw(map.tiles);
 
-    // draw the map thanks to the .itd file in data
+    // ItdTarget itd_target;
+    // itd_target.read_itd_target("data/itd_target.itd");
 
-
-    // create graph with nodes
-    // Graph::WeightedGraph map{};
-    // map.add_vertex(0);
-    // map.add_vertex(1);
-    // map.add_directed_edge(0, 1, 5);
-    // map.add_vertex(2);
-    // map.add_directed_edge(1, 2, 2);
-    // map.add_vertex(3);
-    // map.add_directed_edge(2, 3, 2);
-    // map.add_vertex(4);
-    // map.add_directed_edge(3, 4, 1);
-    // map.add_vertex(5);
-    // map.add_directed_edge(4, 5, 2);
-    // map.add_vertex(6);
-    // map.add_directed_edge(5, 6, 2);
-    // map.add_vertex(7);
-    // map.add_directed_edge(6, 7, 4);
-
-    // map.display_list_graph();
-
+    // itd_target.Targets[0].move();
 }
 
 // TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);

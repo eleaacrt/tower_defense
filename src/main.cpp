@@ -6,8 +6,10 @@
 #include <iostream>
 
 #include "App.hpp"
-#include "Config.hpp"
+#include "Config/ConfigMap.hpp"
+#include "Config/ConfigTarget.hpp"
 #include "Log.hpp"
+#include "Map.hpp"
 
 namespace
 {
@@ -22,19 +24,11 @@ constexpr double TARGET_TIME_FOR_FRAME{1.0 / 60.0};
 
 int main()
 {
-    Log::Debug("------------------------------------------");
-    ItdMap map;
-    bool valid = map.read_itd_map("data/itd_map.itd");
-    if (!valid)
-    {
-        Log::Error("Failed to read map");
-    }
-    else
-    {
-        Log::Debug("Map read successfully");
-    }
 
-    return 0;
+    // ItdTarget itd_target;
+    // itd_target.read_itd_target("data/itd_target.itd");
+
+    // return 0;
 
     // Set an error callback to display glfw errors
     glfwSetErrorCallback([](int error, const char *description)

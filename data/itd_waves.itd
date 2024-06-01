@@ -1,0 +1,12 @@
+ITD
+
+# mot clé : wave
+
+# nombre de vagues
+# type, pv, speed, value, sprite
+
+waves 2
+
+wave 2 ZOMBIE ZOMBIE
+wave 3 GHOST ZOMBIE ZOMBIE
+wave 4 GHOST GHOST GHOST ZOMBIE 

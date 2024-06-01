@@ -1,10 +1,8 @@
-#include "Config.hpp"
+#include "ConfigMap.hpp"
 #include "Log.hpp"
-#include "Graph.hpp"
 
 ItdMap::ItdMap()
 {
-    // rien à faire pour l'instant
 }
 
 ItdMap::~ItdMap()
@@ -14,22 +12,12 @@ ItdMap::~ItdMap()
 
 bool ItdMap::read_itd_map(std::string const &fileName)
 {
-    Log::Debug("Reading map file: " + fileName);
     std::ifstream myFile(fileName);
 
     if (myFile.is_open())
     {
         std::string myString;
-        // while (myFile)
-        // {
-        //     std::getline(myFile, myString);
-        //     // Log::Debug(mystring);
-        // }
-        // myString = get_next_line(myFile);
-        // Log::Debug(myString);
-        // myString = get_next_line(myFile);
-        // Log::Debug(myString);
-
+    
         // lire le tag ITD
         myString = get_next_line(myFile);
         if (myString != "ITD")
@@ -65,8 +53,7 @@ bool ItdMap::read_itd_map(std::string const &fileName)
             Log::Error("Invalid file format: " + fileName);
             return false;
         }
-        path_color = ColorRGB(myString.substr(3));
-        Log::Debug("Path color: " + std::string(path_color));
+        in_color = ColorRGB(myString.substr(3));
 
         // lecture couleur sortie
         myString = get_next_line(myFile);
@@ -75,8 +62,7 @@ bool ItdMap::read_itd_map(std::string const &fileName)
             Log::Error("Invalid file format: " + fileName);
             return false;
         }
-        path_color = ColorRGB(myString.substr(4));
-        Log::Debug("Path color: " + std::string(path_color));
+        out_color = ColorRGB(myString.substr(4));
 
         // lecture du nombre de noeuds
         // lecture des noeuds
@@ -87,7 +73,6 @@ bool ItdMap::read_itd_map(std::string const &fileName)
             return false;
         }
         int nbNodes = std::stoi(myString.substr(6));
-        Log::Debug("Number of nodes: " + std::to_string(nbNodes));
 
         ItdMap::nodes.clear();
 
@@ -115,16 +100,25 @@ bool ItdMap::read_itd_map(std::string const &fileName)
                 node.m_Position = std::make_pair(x, y);
 
                 // noeuds connectés
-                myString = myString.substr(myString.find(" ") + 1);
-                node.m_ConnectedNodes.push_back(std::stoi(myString));
+
+                if (myString.find(" ") != std::string::npos)
+                {
+                    myString = myString.substr(myString.find(" ") + 1);
+                    std::istringstream f(myString);
+                    std::string s;
+                    while (std::getline(f, s, ' '))
+                    {
+                        node.m_ConnectedNodes.push_back(std::stoi(s));
+                    }
+                }
 
                 ItdMap::nodes.push_back(node);
 
-                Log::Debug("Node: " + std::to_string(nodeId) + " (" + std::to_string(x) + ", " + std::to_string(y) + ")");
-                for (auto const &node : node.m_ConnectedNodes)
-                {
-                    Log::Debug("Connected node: " + std::to_string(node));
-                }
+                // Log::Debug("Node: " + std::to_string(nodeId) + " (" + std::to_string(x) + ", " + std::to_string(y) + ")");
+                // for (auto const &node : node.m_ConnectedNodes)
+                // {
+                //     Log::Debug("Connected nodes " + std::to_string(nodeId) + ": " + std::to_string(node));
+                // }
             }
         }
     }

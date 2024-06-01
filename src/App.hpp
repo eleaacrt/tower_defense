@@ -3,6 +3,9 @@
 #include <glad/glad.h>
 #include <simpletext.h>
 
+#include "Config/ConfigMap.hpp"
+#include "Map.hpp"
+
 class App
 {
 public:
@@ -27,8 +30,9 @@ private:
     float _viewSize{};
 
     // Add your variables here
-    GLuint _texture{};
+    // GLuint _texture{};
     float _angle{};
+    Map map;
 
     SimpleText TextRenderer{};
 };

@@ -8,7 +8,6 @@
 #include <sstream>
 
 #include "Log.hpp"
-#include "Node.hpp"
 
 class ColorRGB
 {
@@ -42,26 +41,12 @@ public:
         return "[" + std::to_string(red) + ", " + std::to_string(green) + ", " + std::to_string(blue) + "]";
     }
 
+    bool operator==(const ColorRGB &c) const
+    {
+        return red == c.red && green == c.green && blue == c.blue;
+    }
+
     int red;
     int green;
     int blue;
-};
-
-// définir un nouveau type NodeId qui reste un entier
-// plus compréhensible dans le code
-
-class ItdMap
-{
-public:
-    ItdMap();
-    ~ItdMap();
-    bool read_itd_map(std::string const &filename);
-    std::string map_filename;
-    ColorRGB path_color;
-    ColorRGB in_color;
-    ColorRGB out_color;
-    std::vector<Node> nodes;
-
-private:
-    std::string get_next_line(std::ifstream &myfile);
 };
