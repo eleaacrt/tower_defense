@@ -1,5 +1,17 @@
 #include "ConfigTarget.hpp"
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <utility>
+#include <vector>
+#include <sstream>
+
+#include "GLHelpers.hpp"
+
 #include "Log.hpp"
+#include "utils.hpp"
+
 
 ItdTarget::ItdTarget() {}
 
@@ -30,7 +42,7 @@ bool ItdTarget::read_itd_target(std::string const &fileName)
         }
         int nbTargets = std::stoi(myString.substr(8));
 
-        ItdTarget::Targets.clear();
+        ItdTarget::allTargets.clear();
 
         for (int i = 0; i < nbTargets; i++)
         {
@@ -71,49 +83,61 @@ bool ItdTarget::read_itd_target(std::string const &fileName)
                 return false;
             }
             newTarget.m_Value = std::stoi(myString.substr(6));
-            Targets.push_back(newTarget);
+
+            // texture
+            myString = get_next_line(myFile);
+            if (myString.substr(0, 8) != "texture ")
+            {
+                Log::Error("Invalid file format: " + fileName);
+                return false;
+            }
+            myString = myString.substr(8);
+            // img::Image texture{img::load(make_absolute_path("images/" + myString, true), 3, true)};
+            // newTarget.m_texture_file = loadTexture(texture);
+
+            allTargets.push_back(newTarget);
         }
 
         // debug
         // for (auto &target : Targets)
         // {
-        //     Log::Debug(target.m_Type + ", PV : " + std::to_string(target.m_PointsVie) + ", Speed : " + std::to_string(target.m_Speed) + ", Value : " + std::to_string(target.m_Value));
+        //     Log::Debug(target.m_Type + ", PV : " + std::to_string(target.m_PointsVie) + ", Speed : " + std::to_string(target.m_Speed) + ", Value : " + std::to_string(target.m_Value) + ", Texture : " + target.m_texture_file);
         // }
 
-        myString = get_next_line(myFile);
-        if (myString.substr(0, 6) != "waves ")
-        {
-            Log::Error("Invalid file format: " + fileName);
-            return false;
-        }
-        int nbWaves = std::stoi(myString.substr(6));
+        // myString = get_next_line(myFile);
+        // if (myString.substr(0, 6) != "waves ")
+        // {
+        //     Log::Error("Invalid file format: " + fileName);
+        //     return false;
+        // }
+        // int nbWaves = std::stoi(myString.substr(6));
 
-        // Log::Debug("nbWaves : " + std::to_string(nbWaves));
+        // // Log::Debug("nbWaves : " + std::to_string(nbWaves));
 
-        ItdTarget::Waves.clear();
+        // ItdTarget::Waves.clear();
 
-        for (int i = 0; i < nbWaves; i++)
-        {
-            // type
-            myString = get_next_line(myFile);
-            // Log::Debug("myString : " + myString);
-            if (myString.substr(0, 5) != "wave ")
-            {
-                Log::Error("Invalid file format: " + fileName);
-                return false;
-            }
+        // for (int i = 0; i < nbWaves; i++)
+        // {
+        //     // type
+        //     myString = get_next_line(myFile);
+        //     // Log::Debug("myString : " + myString);
+        //     if (myString.substr(0, 5) != "wave ")
+        //     {
+        //         Log::Error("Invalid file format: " + fileName);
+        //         return false;
+        //     }
 
-            std::vector<Target> newWave;
-            int nbTargets = std::stoi(myString.substr(5));
+        //     std::vector<Target> newWave;
+        //     int nbTargets = std::stoi(myString.substr(5));
 
-            myString = myString.substr(myString.find(" ") + 1);
-            for (int j = 0; j < nbTargets; j++)
-            {
-                myString = myString.substr(myString.find(" ") + 1);
-                newWave.push_back(Targets[std::stoi(myString)]);
-            }
-            Waves.push_back(newWave);
-        }
+        //     myString = myString.substr(myString.find(" ") + 1);
+        //     for (int j = 0; j < nbTargets; j++)
+        //     {
+        //         myString = myString.substr(myString.find(" ") + 1);
+        //         newWave.push_back(Targets[std::stoi(myString)]);
+        //     }
+        //     Waves.push_back(newWave);
+        // }
 
         // debug
         // for (auto &wave : Waves)

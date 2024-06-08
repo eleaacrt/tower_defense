@@ -2,19 +2,33 @@ ITD
 
 # image :
 map map.png
+
 # blanc (chemins):
 path 255 255 255
+
 # bleu (entrée)
 in 0 0 255
+
 # rouge (sortie)
-out 254 0 0
+out 255 0 0
+
 #graphe
-graph 8
+graph 16
+
 node 0 1 1 1
-node 1 6 1 2
-node 2 6 3 3
-node 3 4 3 4
-node 4 4 4 5
-node 5 2 4 6
-node 6 2 6 7
-node 7 6 6
+node 1 5 1 2
+node 2 5 7 3
+node 3 7 7 4
+node 4 7 2 5
+node 5 11 2 6
+node 6 11 5 
+
+node 7 6 13 8
+node 8 14 13 9
+node 9 14 11 10
+node 10 12 11 11
+node 11 12 9 12
+node 12 10 9 13
+node 13 10 7 14
+node 14 13 7 15
+node 15 13 5 6

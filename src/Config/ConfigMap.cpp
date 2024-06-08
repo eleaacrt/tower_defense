@@ -1,5 +1,12 @@
-#include "ConfigMap.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <utility>
+#include <vector>
+#include <sstream>
+
 #include "Log.hpp"
+#include "ConfigMap.hpp"
 
 ItdMap::ItdMap()
 {
@@ -17,7 +24,7 @@ bool ItdMap::read_itd_map(std::string const &fileName)
     if (myFile.is_open())
     {
         std::string myString;
-    
+
         // lire le tag ITD
         myString = get_next_line(myFile);
         if (myString != "ITD")
@@ -34,23 +41,23 @@ bool ItdMap::read_itd_map(std::string const &fileName)
             return false;
         }
         map_filename = myString.substr(4);
-        Log::Debug("Map filename: " + map_filename);
+        // Log::Debug("Map filename: " + map_filename);
 
         // lecture couleur chemin
         myString = get_next_line(myFile);
         if (myString.substr(0, 5) != "path ")
         {
-            Log::Error("Invalid file format: " + fileName);
+            Log::Error("Invalid color : " + myString);
             return false;
         }
         path_color = ColorRGB(myString.substr(5));
-        Log::Debug("Path color: " + std::string(path_color));
+        // Log::Debug("Path color: " + std::string(path_color));
 
         // lecture couleur entrée
         myString = get_next_line(myFile);
         if (myString.substr(0, 3) != "in ")
         {
-            Log::Error("Invalid file format: " + fileName);
+            Log::Error("Invalid color : " + myString);
             return false;
         }
         in_color = ColorRGB(myString.substr(3));
@@ -59,7 +66,7 @@ bool ItdMap::read_itd_map(std::string const &fileName)
         myString = get_next_line(myFile);
         if (myString.substr(0, 4) != "out ")
         {
-            Log::Error("Invalid file format: " + fileName);
+            Log::Error("Invalid color : " + myString);
             return false;
         }
         out_color = ColorRGB(myString.substr(4));
@@ -69,7 +76,7 @@ bool ItdMap::read_itd_map(std::string const &fileName)
         myString = get_next_line(myFile);
         if (myString.substr(0, 6) != "graph ")
         {
-            Log::Error("Invalid file format: " + fileName);
+            Log::Error("Invalid graph: " + myString);
             return false;
         }
         int nbNodes = std::stoi(myString.substr(6));

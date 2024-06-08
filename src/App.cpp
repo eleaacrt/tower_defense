@@ -7,6 +7,7 @@
 #include "simpletext.h"
 #include "utils.hpp"
 #include "GLHelpers.hpp"
+#include <unordered_map>
 
 #include "App.hpp"
 #include "Map.hpp"
@@ -14,11 +15,37 @@
 #include "Config/ConfigTarget.hpp"
 #include "Target.hpp"
 
-App::App() : _previousTime(0.0), _viewSize(10)
+App::App() : _previousTime(0.0), _viewSize(18)
 {
     // load what needs to be loaded here (for example textures)
     // img::Image map{img::load(make_absolute_path("images/map.png", true), 3, true)};
     // _texture = loadTexture(map);
+}
+
+void App::Load_Textures()
+{
+    for (const auto &entry : std::filesystem::directory_iterator(make_absolute_path("images")))
+    {
+        if (entry.is_regular_file())
+        {
+            std::string extension = entry.path().extension().string();
+            if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".bmp" || extension == ".gif")
+            {
+                Log::Debug("Loading texture: " + entry.path().string());
+                img::Image image{img::load(entry.path().string(), 3, true)};
+                GLuint texture_id = loadTexture(image);
+                textures.insert({entry.path().filename().string(), texture_id});
+            }
+            else
+            {
+                Log::Debug("Skipping non-image file: " + entry.path().string());
+            }
+        }
+        else
+        {
+            Log::Debug("Skipping non-regular file: " + entry.path().string());
+        }
+    }
 }
 
 void App::setup()
@@ -33,6 +60,7 @@ void App::setup()
     // TextRenderer.EnableBlending(true);
 
     map.tiles = map.get_Tiles();
+    Load_Textures();
 }
 
 void App::update()
@@ -54,8 +82,13 @@ void App::render()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    map.draw(map.tiles);
+    map.draw(map.tiles, textures);
+    target.move(0, 0);
 
+    // glPushMatrix();
+    // glTranslatef(_angle, _angle, 0);
+    // draw_quad();
+    // glPopMatrix();
     // ItdTarget itd_target;
     // itd_target.read_itd_target("data/itd_target.itd");
 

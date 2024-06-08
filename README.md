@@ -2,10 +2,6 @@
 
 ## TODO :
 
-lire le nombre de noeuds
-lire les noeuds 
-
-renommer le fichier config en itd_map
 
 déplacer les classes ColorRGB, Tower, Target, ... dans leur propre fichier
 
@@ -25,7 +21,18 @@ utiliser le "::update" comme dans l'App pour faire avancer les ennemis
 
 créer une fonction "shot" dans  la tour qui vérifie l'ennemis le plus proche && la portée du tir
 
-# -----------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
-faire dans le CONFIG :
-    - si le noeud existe, alors ajouter seulement le noeud connecté dans le vecteur
+## ENNEMIES
+
+-> lors de la création d'un ennemi :
+
+- il s'affiche au point d'entrée 
+- tant qu'il n'est pas mort :
+  - il avance le long des noeuds
+  - jusqu'à la sortie où il disparait
+  
+SOUCIS DE :
+segmentation fault  /Users/elea/Documents/IMAC/cpp/tower_defense/bin/Debug/OpenGL-Template
+-> PROBABLEMENT DANS LE GET IN DE LA MAP 
+-> OU DANS LE INIT TARGET

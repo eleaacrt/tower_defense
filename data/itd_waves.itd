@@ -1,12 +1,10 @@
 ITD
 
-# mot clé : wave
-
 # nombre de vagues
-# type, pv, speed, value, sprite
+# nb targets, id targets
 
-waves 2
+waves 3
 
-wave 2 ZOMBIE ZOMBIE
-wave 3 GHOST ZOMBIE ZOMBIE
-wave 4 GHOST GHOST GHOST ZOMBIE 
+wave 2 1 1
+wave 3 0 1 1
+wave 4 0 0 1 1

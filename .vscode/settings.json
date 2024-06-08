@@ -69,6 +69,7 @@
         "algorithm": "cpp",
         "filesystem": "cpp",
         "__tree": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "utility": "cpp"
     }
 }

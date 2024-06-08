@@ -1,18 +1,8 @@
 #pragma once
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <utility>
-#include <vector>
-#include <sstream>
-
 #include "Log.hpp"
 #include "Node.hpp"
 #include "ColorRGB.hpp"
-
-// définir un nouveau type NodeId qui reste un entier
-// plus compréhensible dans le code
 
 class ItdMap
 {

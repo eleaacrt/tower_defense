@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include <sstream>
+#include <unordered_map>
 
 #include "Map.hpp"
 #include "App.hpp"
@@ -24,7 +25,7 @@ std::vector<Tile> Map::get_Tiles()
     // ItdMap ItdMap;
 
     // read image file
-    Log::Debug("Map filename: " + ItdMap.map_filename);
+    // Log::Debug("Map filename: " + ItdMap.map_filename);
     sil::Image map{"images/" + ItdMap.map_filename};
 
     for (int i = 0; i < map.width(); i++)
@@ -68,7 +69,9 @@ std::vector<Tile> Map::get_Tiles()
                 ColorRGB tileColorPj = tile.get_DOWN_TyleColor(i, j, map);
 
                 // si x == et y ++ : vertical
-                if (tileColorMj == ItdMap.path_color && tileColorPj == ItdMap.path_color)
+                if ((tileColorMj == ItdMap.path_color && tileColorPj == ItdMap.path_color) || 
+                (tileColorMj == ItdMap.in_color && tileColorPj == ItdMap.path_color) || 
+                (tileColorMj == ItdMap.out_color && tileColorPj == ItdMap.path_color))
                 {
                     tile.m_Type = TypeTile::VERTICAL;
                     allTiles.push_back(tile);
@@ -111,6 +114,7 @@ std::vector<Tile> Map::get_Tiles()
                 tile.m_Type = TypeTile::EMPTY;
                 allTiles.push_back(tile);
             }
+            // Log::Debug("Tile color: " + tilecolor);
         }
     }
 
@@ -118,7 +122,7 @@ std::vector<Tile> Map::get_Tiles()
 }
 
 // initaliser la Map
-void Map::draw(std::vector<Tile> tiles)
+void Map::draw(std::vector<Tile> tiles, std::unordered_map<std::string, GLuint> textures)
 {
 
     float size = 1;
@@ -126,17 +130,17 @@ void Map::draw(std::vector<Tile> tiles)
     // dessiner la map
     for (int i = -(m_Width / 2); i < (m_Width / 2); i++)
     {
-        for (int j = -(m_Height / 2); j < (m_Height / 2); j++)
+        for (int j = -(m_Height / 2); j <= (m_Height / 2); j++)
         {
             // size_t index = (i * (m_Width)) + j;
-            size_t index = (i + (m_Width / 2)) * m_Width + (j + (m_Height / 2));
+            size_t index = (i + (m_Width / 2)) * m_Height + (j + (m_Height / 2));
 
             if (index < tiles.size())
             {
                 glPushMatrix();
                 glScalef(size, size, size);
                 glTranslatef(i * size, j * size, 0);
-                tiles[index].draw();
+                tiles[index].draw(textures);
                 glPopMatrix();
             }
             else
@@ -145,4 +149,24 @@ void Map::draw(std::vector<Tile> tiles)
             }
         }
     }
+}
+
+std::vector<std::pair<int, int>> Map::get_in(std::vector<Tile> tiles)
+{
+    // ItdTarget.read_itd_target("data/itd_target.itd");
+
+    std::vector<std::pair<int, int>> in;
+    for (int i = -(m_Width / 2); i < (m_Width / 2); i++)
+    {
+        for (int j = -(m_Height / 2); j < (m_Height / 2); j++)
+        {
+            // size_t index = (i * (m_Width)) + j;
+            size_t index = (i + (m_Width / 2)) * m_Width + (j + (m_Height / 2));
+            if (tiles[index].m_Type == TypeTile::IN)
+            {
+                in.push_back(std::make_pair(i, j));
+            }
+        }
+    }
+    return in;
 }

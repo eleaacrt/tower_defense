@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <simpletext.h>
+#include <unordered_map>
 
 #include "Config/ConfigMap.hpp"
 #include "Map.hpp"
@@ -13,6 +14,7 @@ public:
 
     void setup();
     void update();
+    void Load_Textures();
 
     // GLFW callbacks binding
     void key_callback(int key, int scancode, int action, int mods);
@@ -33,6 +35,10 @@ private:
     // GLuint _texture{};
     float _angle{};
     Map map;
+    Target target;
+
+    // map de textures
+    std::unordered_map<std::string, GLuint> textures{};
 
     SimpleText TextRenderer{};
 };

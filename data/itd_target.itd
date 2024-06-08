@@ -12,18 +12,11 @@ type GHOST
 pv 50
 speed 2
 value 30
+texture ghost.png
 
 # id 1 dans la vague
 type ZOMBIE
 pv 20
 speed 3
 value 10
-
-# nombre de vagues
-# nb targets, id targets
-
-waves 3
-
-wave 2 1 1
-wave 3 0 1 1
-wave 4 0 0 1 1
+texture zombie.png
