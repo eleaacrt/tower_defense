@@ -61,6 +61,10 @@ void App::setup()
 
     map.tiles = map.get_Tiles();
     Load_Textures();
+    map.create_graph();
+    Log::Debug("Graph created");
+    map.get_shorter_path();
+    target.initTarget(map, textures);
 }
 
 void App::update()
@@ -72,6 +76,7 @@ void App::update()
     _angle += 1.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
 
+    target.update();
     render();
 }
 
@@ -83,7 +88,7 @@ void App::render()
     glLoadIdentity();
 
     map.draw(map.tiles, textures);
-    target.move(0, 0);
+    target.move(map);
 
     // glPushMatrix();
     // glTranslatef(_angle, _angle, 0);

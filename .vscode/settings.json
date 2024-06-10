@@ -70,6 +70,8 @@
         "filesystem": "cpp",
         "__tree": "cpp",
         "map": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp"
     }
 }

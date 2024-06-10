@@ -5,6 +5,8 @@
 
 #include "Target.hpp"
 
+class Target;
+
 class ItdTarget
 {
 public:

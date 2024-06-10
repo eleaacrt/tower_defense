@@ -40,9 +40,9 @@ public:
     float m_Size;
     // std::pair<int, int> m_Position;
 private:
-    GLuint m_in_texture;
-    GLuint m_out_texture;
-    GLuint m_empty_texture;
-    GLuint m_path_texture;
-    GLuint m_corner_texture;
+    // GLuint m_in_texture;
+    // GLuint m_out_texture;
+    // GLuint m_empty_texture;
+    // GLuint m_path_texture;
+    // GLuint m_corner_texture;
 };

@@ -13,6 +13,7 @@
 #include "GLHelpers.hpp"
 #include "utils.hpp"
 #include "ColorRGB.hpp"
+#include "Graph.hpp"
 
 // récupérer les Tuiles
 
@@ -69,9 +70,9 @@ std::vector<Tile> Map::get_Tiles()
                 ColorRGB tileColorPj = tile.get_DOWN_TyleColor(i, j, map);
 
                 // si x == et y ++ : vertical
-                if ((tileColorMj == ItdMap.path_color && tileColorPj == ItdMap.path_color) || 
-                (tileColorMj == ItdMap.in_color && tileColorPj == ItdMap.path_color) || 
-                (tileColorMj == ItdMap.out_color && tileColorPj == ItdMap.path_color))
+                if ((tileColorMj == ItdMap.path_color && tileColorPj == ItdMap.path_color) ||
+                    (tileColorMj == ItdMap.in_color && tileColorPj == ItdMap.path_color) ||
+                    (tileColorMj == ItdMap.out_color && tileColorPj == ItdMap.path_color))
                 {
                     tile.m_Type = TypeTile::VERTICAL;
                     allTiles.push_back(tile);
@@ -151,22 +152,106 @@ void Map::draw(std::vector<Tile> tiles, std::unordered_map<std::string, GLuint> 
     }
 }
 
-std::vector<std::pair<int, int>> Map::get_in(std::vector<Tile> tiles)
+void Map::get_in_out_coordonnees()
 {
     // ItdTarget.read_itd_target("data/itd_target.itd");
 
-    std::vector<std::pair<int, int>> in;
+    // récupérer les coordonnées des points d'entrée et de sortie
     for (int i = -(m_Width / 2); i < (m_Width / 2); i++)
     {
         for (int j = -(m_Height / 2); j < (m_Height / 2); j++)
         {
             // size_t index = (i * (m_Width)) + j;
-            size_t index = (i + (m_Width / 2)) * m_Width + (j + (m_Height / 2));
+            size_t index = (i + (m_Width / 2)) * m_Height + (j + (m_Height / 2));
             if (tiles[index].m_Type == TypeTile::IN)
             {
-                in.push_back(std::make_pair(i, j));
+                in_tiles_coordonnees.push_back(std::make_pair(i + (m_Width / 2), j + (m_Height / 2)));
+            }
+            else if (tiles[index].m_Type == TypeTile::OUT)
+            {
+                out_tile_coordonnees = std::make_pair(i + m_Width / 2, j + m_Height / 2);
             }
         }
     }
-    return in;
+}
+
+void Map::get_in_out_ID()
+{
+    get_in_out_coordonnees();
+    for (Node node : ItdMap.nodes)
+    {
+        // normalization des coordonnées
+        std::pair<int, int> node_coordonnee = {node.m_Position.first, (m_Height - node.m_Position.second - 1)};
+        for (std::pair<int, int> coordonnees : in_tiles_coordonnees)
+        {
+            // Log::Debug("In Coordonnees: " + std::to_string(coordonnees.first) + " " + std::to_string(coordonnees.second));
+            // Log::Debug("Node Coordonnees: " + std::to_string(node_coordonnee.first) + " " + std::to_string(node_coordonnee.second));
+            // Log::Debug("-----------");
+            if (node_coordonnee.first == coordonnees.first && node_coordonnee.second == coordonnees.second)
+            {
+                Log::Debug("In ID: " + std::to_string(node.m_Id));
+                in_tiles_ID.push_back(node.m_Id);
+            }
+        }
+        if (node_coordonnee.first == out_tile_coordonnees.first && node_coordonnee.second == out_tile_coordonnees.second)
+        {
+            Log::Debug("Out ID: " + std::to_string(node.m_Id));
+            out_tile_ID = node.m_Id;
+        }
+    }
+}
+
+void Map::create_graph()
+{
+    for (Node node : ItdMap.nodes)
+    {
+        // Log::Debug("Node: " + std::to_string(node.m_Id) + " " + std::to_string(node.m_Position.first) + " " + std::to_string(node.m_Position.second));
+        for (int neighbour : node.m_ConnectedNodes)
+        {
+            // Log::Debug("Neighbour: " + std::to_string(neighbour));
+            for (Node neighbourNode : ItdMap.nodes)
+            {
+                if (neighbourNode.m_Id == neighbour)
+                {
+                    float weight = sqrt(pow(node.m_Position.first - neighbourNode.m_Position.first, 2) + pow(node.m_Position.second - neighbourNode.m_Position.second, 2));
+                    graph.add_directed_edge(node.m_Id, neighbourNode.m_Id, weight);
+                    Log::Debug("Edge: " + std::to_string(node.m_Id) + " - " + std::to_string(neighbourNode.m_Id) + " : " + std::to_string(weight));
+                }
+            }
+        }
+    }
+}
+
+void Map::get_shorter_path()
+{
+    get_in_out_ID();
+
+    for (int in_tiles : in_tiles_ID)
+    {
+        std::unordered_map<int, std::pair<float, int>> distances{graph.dijkstra(graph, in_tiles, out_tile_ID)};
+        std::vector<int> shorter_path_id;
+        std::vector<Node> shorter_path;
+
+        auto final_edge{distances.at(out_tile_ID)};
+        Log::Debug("Distance minimale : " + std::to_string(final_edge.first));
+        Log::Debug("Out ID: " + std::to_string(out_tile_ID));
+
+        shorter_path_id.push_back(out_tile_ID);
+        while (final_edge.second != in_tiles)
+        {
+            shorter_path_id.push_back(final_edge.second);
+            final_edge = distances.at(final_edge.second);
+        }
+
+        shorter_path_id.push_back(in_tiles);
+
+        for (int shorter_node_id : shorter_path_id)
+        {
+            for (Node &node : ItdMap.nodes)
+                if (node.m_Id == shorter_node_id)
+                    shorter_path.push_back(node);
+        }
+
+        all_shorter_path.push_back(shorter_path);
+    }
 }

@@ -5,14 +5,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Node.hpp"
-
+#include "Map.hpp"
 // #include "Config/ConfigTarget.hpp"
+
+class Map;
 
 class Target
 {
 public:
     Target();
+    ~Target(){};
 
     std::string m_Type;
     int m_PointsVie;
@@ -21,11 +23,15 @@ public:
     unsigned int m_texture_file;
     std::pair<int, int> m_Position;
 
-    void initTarget();
+    void initTarget(Map map, std::unordered_map<std::string, GLuint> textures);
     void update();
-    void move(int x, int y);
+    void move(Map map);
+    void setStartPosition(std::vector<std::pair<int, int>> startPosition);
 
 private:
     double m_previousTime{};
     double m_translate{};
+    int currentNodeIndex;
+    int occurence = 0;
+    std::pair<int, int> current_pos;
 };
