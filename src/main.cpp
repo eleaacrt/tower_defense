@@ -8,6 +8,8 @@
 #include "App.hpp"
 #include "Config/ConfigMap.hpp"
 #include "Config/ConfigTarget.hpp"
+#include "Config/ConfigWave.hpp"
+#include "Config/ConfigTower.hpp"
 #include "Log.hpp"
 #include "Map.hpp"
 
@@ -25,8 +27,8 @@ constexpr double TARGET_TIME_FOR_FRAME{1.0 / 60.0};
 int main()
 {
 
-    // ItdTarget itd_target;
-    // itd_target.read_itd_target("data/itd_target.itd");
+    // ItdTower itd_tower;
+    // itd_tower.read_itd_tower("data/itd_tower.itd");
 
     // return 0;
 
@@ -74,21 +76,28 @@ int main()
     glfwSetWindowUserPointer(window, &app);
 
     glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods)
-                       { window_as_app(window).key_callback(key, scancode, action, mods); });
+                       { window_as_app(window).key_callback(window, key, scancode, action, mods); });
     glfwSetMouseButtonCallback(window, [](GLFWwindow *window, int button, int action, int mods)
-                               { window_as_app(window).mouse_button_callback(button, action, mods); });
+                               { window_as_app(window).mouse_button_callback(window, button, action, mods); });
     glfwSetScrollCallback(window, [](GLFWwindow *window, double xoffset, double yoffset)
                           { window_as_app(window).scroll_callback(xoffset, yoffset); });
     glfwSetCursorPosCallback(window, [](GLFWwindow *window, double xpos, double ypos)
-                             { window_as_app(window).cursor_position_callback(xpos, ypos); });
+                             { window_as_app(window).cursor_position_callback(window, xpos, ypos); });
     glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int width, int height)
-                              { window_as_app(window).size_callback(width, height); });
+                              { window_as_app(window).size_callback(window, width, height); });
 
     // Force calling the size_callback of the game to set the right viewport and projection matrix
     {
+        // Log::Debug("app.size_callback(window, width, height);" + std::to_string(app._width) + " " + std::to_string(app._height));
         int width, height;
+
         glfwGetWindowSize(window, &width, &height);
-        app.size_callback(width, height);
+        // Log::Debug("Width: " + std::to_string(width) + " Height: " + std::to_string(height));
+        // Log::Debug("app.size_callback(window, width, height);" + std::to_string(app._width) + " " + std::to_string(app._height));
+
+        app.size_callback(window, width, height);
+        // Log::Debug("Width: " + std::to_string(width) + " Height: " + std::to_string(height));
+        // Log::Debug("app.size_callback(window, width, height);" + std::to_string(app._width) + " " + std::to_string(app._height));
     }
 
     app.setup();

@@ -1,0 +1,21 @@
+ITD
+
+# puissance portee vitesse position
+
+towers 2
+
+# id 0 dans la liste des tours
+type PISE
+power 2
+range 3
+speed 4
+cost 50
+texture tower1.png
+
+# id 1 dans la liste des tours
+type EIFFEL
+power 1
+range 5
+speed 2
+cost 25
+texture tower2.png

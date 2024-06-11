@@ -93,7 +93,7 @@ bool ItdTarget::read_itd_target(std::string const &fileName)
             }
             myString = myString.substr(8);
             // img::Image texture{img::load(make_absolute_path("images/" + myString, true), 3, true)};
-            // newTarget.m_texture_file = loadTexture(texture);
+            newTarget.m_texture_file = myString;
 
             allTargets.push_back(newTarget);
         }

@@ -14,9 +14,16 @@
 #include "Config/ConfigMap.hpp"
 #include "Config/ConfigTarget.hpp"
 #include "Target.hpp"
+#include "UserInterface.hpp"
 
-App::App() : _previousTime(0.0), _viewSize(18)
+App::App() : _previousTime(0.0), _viewSize(25)
 {
+    lifes_max = 5;
+    ItdTower.read_itd_tower("data/itd_tower.itd");
+    nb_towers = ItdTower.allTowers.size();
+    _width = 0;
+    _height = 0;
+    selected_tower = -1;
     // load what needs to be loaded here (for example textures)
     // img::Image map{img::load(make_absolute_path("images/map.png", true), 3, true)};
     // _texture = loadTexture(map);
@@ -32,7 +39,7 @@ void App::Load_Textures()
             if (extension == ".png" || extension == ".jpg" || extension == ".jpeg" || extension == ".bmp" || extension == ".gif")
             {
                 Log::Debug("Loading texture: " + entry.path().string());
-                img::Image image{img::load(entry.path().string(), 3, true)};
+                img::Image image{img::load(entry.path().string(), 4, true)};
                 GLuint texture_id = loadTexture(image);
                 textures.insert({entry.path().filename().string(), texture_id});
             }
@@ -51,7 +58,7 @@ void App::Load_Textures()
 void App::setup()
 {
     // Set the clear color to a nice blue
-    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    glClearColor((182.f / 255.f), (213.f / 255.f), (60.f / 255.f), 0.0f);
 
     // Setup the text renderer with blending enabled and white text color
     // TextRenderer.ResetFont();
@@ -64,7 +71,9 @@ void App::setup()
     map.create_graph();
     Log::Debug("Graph created");
     map.get_shorter_path();
-    target.initTarget(map, textures);
+    Wave waves;
+    // waves.lifes = lifes;
+    // waves.initWave(map, textures);
 }
 
 void App::update()
@@ -76,7 +85,8 @@ void App::update()
     _angle += 1.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
 
-    target.update();
+    waves.update(map);
+
     render();
 }
 
@@ -85,10 +95,31 @@ void App::render()
     // Clear the color and depth buffers of the frame buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glLoadIdentity();
 
-    map.draw(map.tiles, textures);
-    target.move(map);
+    // Log::Debug("lifes " + std::to_string(waves.lifes));
+    int nb_targets_arrived = waves.get_number_of_target_arrived();
+
+    if ((lifes_max - nb_targets_arrived) <= 0)
+    {
+        // glClearColor((132.f / 255.f), (163.f / 255.f), (10.f / 255.f), 0.0f);
+        // game over
+        // afficher game over
+        // afficher score
+        // afficher bouton pour rejouer
+        // afficher bouton pour quitter
+        glClearColor((82.f / 255.f), (113.f / 255.f), (0.f / 255.f), 0.0f);
+        ui.game_over(_width, _height, textures);
+    }
+    else
+    {
+        map.draw(map.tiles, textures);
+        waves.load(map, textures);
+        ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
+        ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
+    }
 
     // glPushMatrix();
     // glTranslatef(_angle, _angle, 0);
@@ -117,28 +148,70 @@ void App::render()
 
 // TextRenderer.Render();
 
-void App::key_callback(int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/)
+void App::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        // stopper le jeu
+    }
+}
+
+void App::mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+    {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+        // int windowWidth, windowHeight;
+        // glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+        // glClearColor(float(xpos) / windowWidth, 0.0f, float(ypos) / windowHeight, 1.0f);
+        Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+
+        // si la position du click est dans la zone de selection des tours
+        // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+
+        for (int i = 0; i < nb_towers; i++)
+        {
+            Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
+            if (xpos < ui.get_tower_positions[i].first.first && xpos > ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].second.second && ypos < ui.get_tower_positions[i].first.second)
+            {
+                Log::Debug("Tower selected: " + std::to_string(i));
+                selected_tower = i;
+            }
+        }
+
+        // std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> towers_positions = ui.get_tower_positions;
+    }
+}
+
+void App::scroll_callback(double xoffset, double yoffset)
 {
 }
 
-void App::mouse_button_callback(int /*button*/, int /*action*/, int /*mods*/)
+void App::cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
 {
+    glfwGetCursorPos(window, &xpos, &ypos);
+    // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
 }
 
-void App::scroll_callback(double /*xoffset*/, double /*yoffset*/)
+void App::size_callback(GLFWwindow *window, int width, int height)
 {
-}
-
-void App::cursor_position_callback(double /*xpos*/, double /*ypos*/)
-{
-}
-
-void App::size_callback(int width, int height)
-{
+    // DEUX FOIS PLUS GRAND QUE SOUS WINDOWS
     _width = width;
     _height = height;
 
+    // Log::Debug("Width: " + std::to_string(_width) + " Height: " + std::to_string(_height));
+
+    // log les width (_width et _height) et les window
+
     // make sure the viewport matches the new window dimensions
+    // glfwGetFramebufferSize(window, &_width, &_height);
     glViewport(0, 0, _width, _height);
 
     const float aspectRatio{_width / (float)_height};
