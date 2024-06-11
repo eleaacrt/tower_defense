@@ -50,7 +50,7 @@ void Graph::WeightedGraph::add_undirected_edge(int from, int to, float weight)
     add_directed_edge(to, from, weight);
 }
 
-Graph::WeightedGraph Graph::build_from_adjacency_matrix(const std::__1::vector<std::__1::vector<float>> &adjacency_matrix)
+Graph::WeightedGraph Graph::build_from_adjacency_matrix(const std::vector<std::vector<float>> &adjacency_matrix)
 {
     Graph::WeightedGraph graph;
 

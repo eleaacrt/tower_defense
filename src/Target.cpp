@@ -11,7 +11,7 @@ Target::Target()
     m_Speed = 2;
     m_Value = 0;
     m_Position = std::make_pair(0, 0);
-};
+}
 
 void Target::initTarget(Map map, std::unordered_map<std::string, GLuint> textures)
 {

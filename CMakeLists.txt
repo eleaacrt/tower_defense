@@ -1,3 +1,5 @@
+set(CMAKE_CXX_FLAGS "-fpermissive")
+
 cmake_minimum_required(VERSION 3.25)
 
 # Be nice to visual studio
@@ -6,7 +8,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Be able to use fetch content to get libraries
 include(FetchContent)
 
-project("OpenGL-Template")
+project("tower_defense")
 
 add_executable(${PROJECT_NAME})
 
