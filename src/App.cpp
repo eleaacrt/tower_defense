@@ -18,12 +18,13 @@
 
 App::App() : _previousTime(0.0), _viewSize(25)
 {
-    lifes_max = 5;
+    lifes_max = 10;
     ItdTower.read_itd_tower("data/itd_tower.itd");
     nb_towers = ItdTower.allTowers.size();
-    _width = 0;
-    _height = 0;
     selected_tower = -1;
+    towers = ItdTower.allTowers;
+    cursor_pos = std::make_pair(0, 0);
+
     // load what needs to be loaded here (for example textures)
     // img::Image map{img::load(make_absolute_path("images/map.png", true), 3, true)};
     // _texture = loadTexture(map);
@@ -119,6 +120,12 @@ void App::render()
         waves.load(map, textures);
         ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
+        if (selected_tower >= 0)
+        {
+            Log::Debug("Cursors pos: " + std::to_string(cursor_pos.first) + ", " + std::to_string(cursor_pos.second));
+            towers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize);
+        }
+        Log::Debug("Selected tower: " + std::to_string(selected_tower));
     }
 
     // glPushMatrix();
@@ -197,7 +204,8 @@ void App::scroll_callback(double xoffset, double yoffset)
 void App::cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
 {
     glfwGetCursorPos(window, &xpos, &ypos);
-    // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+    cursor_pos = std::make_pair(xpos, ypos);
+    Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
 }
 
 void App::size_callback(GLFWwindow *window, int width, int height)

@@ -29,10 +29,11 @@ public:
     int lifes;
     int nb_towers;
 
-    int _width;
-    int _height;
+    int _width, _height;
+    std::pair<int, int> cursor_pos;
 
     int selected_tower;
+    std::vector<Tower> towers;
 
 private:
     void render();
