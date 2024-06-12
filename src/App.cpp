@@ -22,12 +22,9 @@ App::App() : _previousTime(0.0), _viewSize(25)
     ItdTower.read_itd_tower("data/itd_tower.itd");
     nb_towers = ItdTower.allTowers.size();
     selected_tower = -1;
-    towers = ItdTower.allTowers;
+    is_a_tower_selected = false;
+    towers = {};
     cursor_pos = std::make_pair(0, 0);
-
-    // load what needs to be loaded here (for example textures)
-    // img::Image map{img::load(make_absolute_path("images/map.png", true), 3, true)};
-    // _texture = loadTexture(map);
 }
 
 void App::Load_Textures()
@@ -120,29 +117,24 @@ void App::render()
         waves.load(map, textures);
         ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
-        if (selected_tower >= 0)
+
+        if (selected_tower >= 0 && is_a_tower_selected)
         {
-            Log::Debug("Cursors pos: " + std::to_string(cursor_pos.first) + ", " + std::to_string(cursor_pos.second));
-            towers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize);
+            // Log::Debug("Cursors pos: " + std::to_string(cursor_pos.first) + ", " + std::to_string(cursor_pos.second));
+            ItdTower.allTowers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize, map.m_Width, map.m_Width);
         }
+
+        // Log::Debug(std::to_string(towers.size()));
         if (towers.size() > 0)
         {
-            for (int i = 0; i < towers.size(); i++)
+            for (size_t i = 0; i < towers.size(); i++)
             {
-                towers[i].drawTower(towers[i], textures, _width, _height, _viewSize);
+                towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map.m_Width, map.m_Width);
             }
         }
-        Log::Debug("Selected tower: " + std::to_string(selected_tower));
+        // Log::Debug("Selected tower: " + std::to_string(selected_tower));
     }
 
-    // glPushMatrix();
-    // glTranslatef(_angle, _angle, 0);
-    // draw_quad();
-    // glPopMatrix();
-    // ItdTarget itd_target;
-    // itd_target.read_itd_target("data/itd_target.itd");
-
-    // itd_target.Targets[0].move();
 }
 
 // TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);
@@ -181,32 +173,24 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
-        // int windowWidth, windowHeight;
-        // glfwGetWindowSize(window, &windowWidth, &windowHeight);
-
-        // glClearColor(float(xpos) / windowWidth, 0.0f, float(ypos) / windowHeight, 1.0f);
-        Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
-
-        // si la position du click est dans la zone de selection des tours
-        // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
-
-        for (int i = 0; i < nb_towers; i++)
-        {
-            Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
-            if (xpos < ui.get_tower_positions[i].first.first && xpos > ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].second.second && ypos < ui.get_tower_positions[i].first.second)
-            {
-                Log::Debug("Tower selected: " + std::to_string(i));
-                selected_tower = i;
-            }
-        }
-        if (selected_tower > -1)
+        if (is_a_tower_selected && selected_tower >= 0)
         {
             ItdTower.allTowers[selected_tower].m_Position = std::make_pair(xpos, ypos);
             towers.push_back(ItdTower.allTowers[selected_tower]);
-            // selected_tower = -1;
+            selected_tower = -1;
+            is_a_tower_selected = false;
         }
 
-        // std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> towers_positions = ui.get_tower_positions;
+        for (int i = 0; i < nb_towers; i++)
+        {
+            // Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
+            if (xpos < ui.get_tower_positions[i].first.first && xpos > ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].second.second && ypos < ui.get_tower_positions[i].first.second)
+            {
+                // Log::Debug("Tower selected: " + std::to_string(i));
+                selected_tower = i;
+                is_a_tower_selected = true;
+            }
+        }
     }
 }
 
@@ -218,7 +202,7 @@ void App::cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
 {
     glfwGetCursorPos(window, &xpos, &ypos);
     cursor_pos = std::make_pair(xpos, ypos);
-    Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+    // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
 }
 
 void App::size_callback(GLFWwindow *window, int width, int height)
@@ -229,10 +213,7 @@ void App::size_callback(GLFWwindow *window, int width, int height)
 
     // Log::Debug("Width: " + std::to_string(_width) + " Height: " + std::to_string(_height));
 
-    // log les width (_width et _height) et les window
-
     // make sure the viewport matches the new window dimensions
-    // glfwGetFramebufferSize(window, &_width, &_height);
     glViewport(0, 0, _width, _height);
 
     const float aspectRatio{_width / (float)_height};

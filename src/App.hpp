@@ -33,6 +33,7 @@ public:
     std::pair<int, int> cursor_pos;
 
     int selected_tower;
+    bool is_a_tower_selected;
     std::vector<Tower> towers;
 
 
