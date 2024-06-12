@@ -47,11 +47,11 @@ void Tower::loadTower(std::pair<int, int> position, std::unordered_map<std::stri
 
     if (yTransformed >= map_height / 2)
     {
-        yTransformed = (map_height / 2) - 1;
+        yTransformed = (map_height / 2);
     }
     if (yTransformed <= -(map_height / 2))
     {
-        yTransformed = -(map_height / 2) + 1;
+        yTransformed = -(map_height / 2);
     }
 
     glPushMatrix();

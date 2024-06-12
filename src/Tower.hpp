@@ -37,18 +37,3 @@ public:
 private:
     // ItdTower ItdTower;
 };
-
-// class TowerFactory
-// {
-// public:
-//     TowerFactory();
-//     ~TowerFactory(){};
-
-//     Tower createTower(std::string type, std::pair<int, int> position);
-
-// private:
-//     std::vector<Tower> m_Towers;
-//     std::unordered_map<std::string, Tower> m_TowerTypes;
-
-//     ItdTower ItdTower;
-// };

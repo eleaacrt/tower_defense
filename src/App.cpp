@@ -19,12 +19,8 @@
 App::App() : _previousTime(0.0), _viewSize(25)
 {
     lifes_max = 10;
-    ItdTower.read_itd_tower("data/itd_tower.itd");
-    nb_towers = ItdTower.allTowers.size();
-    selected_tower = -1;
-    is_a_tower_selected = false;
-    towers = {};
     cursor_pos = std::make_pair(0, 0);
+    ItdTower.read_itd_tower("data/itd_tower.itd");
 }
 
 void App::Load_Textures()
@@ -70,8 +66,7 @@ void App::setup()
     Log::Debug("Graph created");
     map.get_shorter_path();
     Wave waves;
-    // waves.lifes = lifes;
-    // waves.initWave(map, textures);
+    AllTowers all_towers;
 }
 
 void App::update()
@@ -118,23 +113,18 @@ void App::render()
         ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
 
-        if (selected_tower >= 0 && is_a_tower_selected)
-        {
-            // Log::Debug("Cursors pos: " + std::to_string(cursor_pos.first) + ", " + std::to_string(cursor_pos.second));
-            ItdTower.allTowers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize, map.m_Width, map.m_Width);
-        }
-
+        all_towers.select_a_tower(cursor_pos, textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
+        all_towers.load_all_towers(textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
         // Log::Debug(std::to_string(towers.size()));
-        if (towers.size() > 0)
-        {
-            for (size_t i = 0; i < towers.size(); i++)
-            {
-                towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map.m_Width, map.m_Width);
-            }
-        }
+        // if (towers.size() > 0)
+        // {
+        //     for (size_t i = 0; i < towers.size(); i++)
+        //     {
+        //         towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map.m_Width, map.m_Width);
+        //     }
+        // }
         // Log::Debug("Selected tower: " + std::to_string(selected_tower));
     }
-
 }
 
 // TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);
@@ -173,24 +163,11 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
-        if (is_a_tower_selected && selected_tower >= 0)
+        if (all_towers.is_a_tower_selected && all_towers.selected_tower >= 0)
         {
-            ItdTower.allTowers[selected_tower].m_Position = std::make_pair(xpos, ypos);
-            towers.push_back(ItdTower.allTowers[selected_tower]);
-            selected_tower = -1;
-            is_a_tower_selected = false;
+            all_towers.click_to_add_a_tower(xpos, ypos);
         }
-
-        for (int i = 0; i < nb_towers; i++)
-        {
-            // Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
-            if (xpos < ui.get_tower_positions[i].first.first && xpos > ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].second.second && ypos < ui.get_tower_positions[i].first.second)
-            {
-                // Log::Debug("Tower selected: " + std::to_string(i));
-                selected_tower = i;
-                is_a_tower_selected = true;
-            }
-        }
+        all_towers.click_to_select_a_tower(xpos, ypos, ui);
     }
 }
 

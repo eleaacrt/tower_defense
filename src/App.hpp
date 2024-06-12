@@ -9,6 +9,7 @@
 #include "Map.hpp"
 #include "Wave.hpp"
 #include "UserInterface.hpp"
+#include "AllTowers.hpp"
 
 class App
 {
@@ -27,15 +28,9 @@ public:
     void size_callback(GLFWwindow *window, int width, int height);
 
     int lifes;
-    int nb_towers;
 
     int _width, _height;
     std::pair<int, int> cursor_pos;
-
-    int selected_tower;
-    bool is_a_tower_selected;
-    std::vector<Tower> towers;
-
 
 private:
     void render();
@@ -49,6 +44,7 @@ private:
     Map map;
     Wave waves;
     ItdTower ItdTower;
+    AllTowers all_towers;
     UserInterface ui;
     int lifes_max;
 
