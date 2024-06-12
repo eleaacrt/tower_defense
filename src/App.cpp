@@ -125,6 +125,13 @@ void App::render()
             Log::Debug("Cursors pos: " + std::to_string(cursor_pos.first) + ", " + std::to_string(cursor_pos.second));
             towers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize);
         }
+        if (towers.size() > 0)
+        {
+            for (int i = 0; i < towers.size(); i++)
+            {
+                towers[i].drawTower(towers[i], textures, _width, _height, _viewSize);
+            }
+        }
         Log::Debug("Selected tower: " + std::to_string(selected_tower));
     }
 
@@ -191,6 +198,12 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
                 Log::Debug("Tower selected: " + std::to_string(i));
                 selected_tower = i;
             }
+        }
+        if (selected_tower > -1)
+        {
+            ItdTower.allTowers[selected_tower].m_Position = std::make_pair(xpos, ypos);
+            towers.push_back(ItdTower.allTowers[selected_tower]);
+            // selected_tower = -1;
         }
 
         // std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> towers_positions = ui.get_tower_positions;

@@ -32,6 +32,8 @@ public:
 
     void initTower(ItdTower itd_tower, std::pair<int, int> position, int id_type_tower);
     void loadTower(std::pair<int, int> position, std::unordered_map<std::string, GLuint> textures, int _width, int _height, float _viewSize);
+    void drawTower(Tower tower, std::unordered_map<std::string, GLuint> textures, int _width, int _height, float _viewSize);
+
 private:
     // ItdTower ItdTower;
 };

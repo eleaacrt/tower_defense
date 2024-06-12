@@ -27,8 +27,34 @@ void Tower::initTower(ItdTower itd_tower, std::pair<int, int> position, int id_t
 
 void Tower::loadTower(std::pair<int, int> position, std::unordered_map<std::string, GLuint> textures, int _width, int _height, float viewSize)
 {
+    float x = (position.first / (float)_width) * 2 - 1;
+    float y = 1 - (position.second / (float)_height) * 2;
+
+    float viewHeight = _height / viewSize;
+    float viewWidth = _width / viewSize;
+
+    int xTransformed = x * (viewWidth / 2);
+    int yTransformed = y * (viewHeight / 2);
+
     glPushMatrix();
-    glTranslatef((position.first / viewSize) - ((_width / 2) / viewSize), -((position.second - (_height / 2)) / viewSize), 1);
+    glTranslatef((xTransformed % int(viewSize)), (yTransformed % int(viewSize)), 0);
+    draw_quad_with_texture(textures[m_TextureFile]);
+    glPopMatrix();
+}
+
+void Tower::drawTower(Tower tower, std::unordered_map<std::string, GLuint> textures, int _width, int _height, float viewSize)
+{
+    float x = (m_Position.first / (float)_width) * 2 - 1;
+    float y = 1 - (m_Position.second / (float)_height) * 2;
+
+    float viewHeight = _height / viewSize;
+    float viewWidth = _width / viewSize;
+
+    int xTransformed = x * (viewWidth / 2);
+    int yTransformed = y * (viewHeight / 2);
+
+    glPushMatrix();
+    glTranslatef((xTransformed % int(viewSize)), (yTransformed % int(viewSize)), 0);
     draw_quad_with_texture(textures[m_TextureFile]);
     glPopMatrix();
 }
