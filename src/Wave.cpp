@@ -20,7 +20,7 @@ void Wave::update(Map map)
     for (size_t i = 0; i < currentMonsterIndex; i++)
     {
         Waves[id_wave][i].update();
-        }
+    }
 
     const double currentTime{glfwGetTime()};
     // Log::Debug("currentTme : " + std::to_string(currentTime));
@@ -54,7 +54,7 @@ void Wave::load(Map map, std::unordered_map<std::string, GLuint> textures)
     for (size_t i = 0; i < currentMonsterIndex; i++)
     {
         // Log::Debug("Monster n°" + std::to_string(i) + " is arrived ? " + std::to_string(Waves[id_wave][i].m_isArrived));
-        if (!Waves[id_wave][i].m_isArrived)
+        if (!Waves[id_wave][i].m_isArrived || Waves[id_wave][i].m_PointsVie > 0)
         {
             Waves[id_wave][i].move(map, textures);
         }

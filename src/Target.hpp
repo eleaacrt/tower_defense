@@ -28,6 +28,7 @@ public:
     void initTarget(Map map, std::unordered_map<std::string, GLuint> textures);
     void update();
     void move(Map map, std::unordered_map<std::string, GLuint> textures);
+    void attaque(int power);
 
 private:
     int randomIndex;

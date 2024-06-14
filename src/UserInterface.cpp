@@ -3,6 +3,8 @@
 #include "UserInterface.hpp"
 #include "GLHelpers.hpp"
 #include "Map.hpp"
+#include <iostream>
+#include <string>
 
 UserInterface::UserInterface()
 {
@@ -28,6 +30,24 @@ void UserInterface::load_life_bar(int lifes_max, int lifes, std::unordered_map<s
         glTranslatef(1.2, 0, 0);
     }
     glPopMatrix();
+}
+
+void UserInterface::load_money(int &_width, int &_height, float viewSize, int money, std::unordered_map<std::string, GLuint> textures)
+{
+    glPushMatrix();
+    glTranslatef(((map.m_Width / 2) - 3), (map.m_Height / 2) + 2, 0);
+    glScalef(1, 1, 1);
+    draw_quad_with_texture(textures["piece.png"]);
+    glPopMatrix();
+
+    const char *money_str = std::to_string(money).c_str();
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_48);
+    TextRenderer.Label(money_str, (_width / 2) + (viewSize * map.m_Width / 2), ((_height / 2) - (viewSize * map.m_Height / 2)) - (2 * viewSize), SimpleText::CENTER);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
 }
 
 void UserInterface::game_over(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures)

@@ -16,6 +16,7 @@ public:
     ~UserInterface(){};
 
     void load_life_bar(int lifes_max, int lifes, std::unordered_map<std::string, GLuint> textures);
+    void load_money(int &_width, int &_height, float viewSize, int money, std::unordered_map<std::string, GLuint> textures);
     void game_over(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures);
     void towers_to_select(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures, ItdTower ItdTower, float viewSize);
     std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> get_tower_positions;

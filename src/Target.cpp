@@ -30,11 +30,20 @@ void Target::update()
     m_previousTime = currentTime;
 
     m_translate += m_Speed * 0.01;
+
+    Log::Debug("m_PV " + std::to_string(m_PointsVie));
 }
 
 void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
 {
 
+    if (currentNodeIndex < 0)
+    {
+        m_isArrived = true;
+        return;
+    }
+
+    // Log::Debug("Target : " + m_Type + " " + std::to_string(m_Position.first) + " " + std::to_string(m_Position.second) + " PV : " + std::to_string(m_PointsVie));
     std::pair node_pos = {map.all_shorter_path[randomIndex][currentNodeIndex].m_Position.first, (map.m_Height - map.all_shorter_path[randomIndex][currentNodeIndex].m_Position.second - 1)};
 
     std::pair dist = {
@@ -54,14 +63,8 @@ void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
 
     glPushMatrix();
 
-    if (currentNodeIndex < 0)
-    {
-        m_isArrived = true;
-        return;
-    }
-
     // on parcourt selon les X
-    else if (abs(node_pos.first - m_Position.first) != 0)
+    if (abs(node_pos.first - m_Position.first) != 0)
     {
         if (m_translate < dist.first)
         {
@@ -95,4 +98,14 @@ void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
     draw_quad_with_texture(textures[m_texture_file]);
     // draw_quad();
     glPopMatrix();
+}
+
+void Target::attaque(int power)
+{
+    m_PointsVie -= power;
+    // Log::Debug("PV : " + std::to_string(m_PointsVie));
+    if (m_PointsVie <= 0)
+    {
+        m_isDead = true;
+    }
 }

@@ -28,6 +28,7 @@ public:
     void size_callback(GLFWwindow *window, int width, int height);
 
     int lifes;
+    int money;
 
     int _width, _height;
     std::pair<int, int> cursor_pos;
