@@ -233,8 +233,8 @@ void Map::get_shorter_path()
         std::vector<Node> shorter_path;
 
         auto final_edge{distances.at(out_tile_ID)};
-        Log::Debug("Distance minimale : " + std::to_string(final_edge.first));
-        Log::Debug("Out ID: " + std::to_string(out_tile_ID));
+        // Log::Debug("Distance minimale : " + std::to_string(final_edge.first));
+        // Log::Debug("Out ID: " + std::to_string(out_tile_ID));
 
         shorter_path_id.push_back(out_tile_ID);
         while (final_edge.second != in_tiles)

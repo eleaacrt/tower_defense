@@ -15,10 +15,11 @@ public:
 
     std::vector<std::vector<Target>> Waves;
 
-    void initWave(Map map, std::unordered_map<std::string, GLuint> textures);
-    void update(Map map);
-    int get_number_of_target_arrived();
-    void load(Map map, std::unordered_map<std::string, GLuint> textures);
+    void initWave(Map map, std::unordered_map<std::string, GLuint> textures, int id_current_wave);
+    void update(Map map, int &app_current_monster_index, int id_current_wave);
+    int get_number_of_target_arrived(int id_current_wave);
+    int get_number_of_target_dead(int id_current_wave);
+    void load(Map map, std::unordered_map<std::string, GLuint> textures, float _viewSize, int &app_current_monster_index, int id_current_wave);
     size_t currentMonsterIndex;
     size_t id_wave;
     // int lifes;

@@ -20,8 +20,10 @@ void Target::initTarget(Map map, std::unordered_map<std::string, GLuint> texture
     int nb_in = map.in_tiles_ID.size();
     randomIndex = rand() % nb_in;
     m_Position = map.in_tiles_coordonnees[randomIndex];
+    m_TargetPosition = m_Position;
 
     currentNodeIndex = map.all_shorter_path[randomIndex].size() - 2;
+    m_PV = m_PointsVie;
 }
 
 void Target::update()
@@ -30,16 +32,31 @@ void Target::update()
     m_previousTime = currentTime;
 
     m_translate += m_Speed * 0.01;
-
-    Log::Debug("m_PV " + std::to_string(m_PointsVie));
 }
 
-void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
+void Target::attaque(int power)
 {
+    // Log::Debug("PV : " + std::to_string(m_PV));
+    m_PV -= power;
+}
 
+void Target::move(Map map, std::unordered_map<std::string, GLuint> textures, float _viewSize)
+{
+    // Log::Debug("Target : " + m_Type + " " + std::to_string(m_Position.first) + " " + std::to_string(m_Position.second) + " PV : " + std::to_string(m_PointsVie));
+
+    // Log::Debug("currentNodeIndex : " + std::to_string(currentNodeIndex));
     if (currentNodeIndex < 0)
     {
         m_isArrived = true;
+        m_Position = {1000, 1000};
+        return;
+    }
+
+    // Log::Debug("m_PV : " + std::to_string(m_PV));
+    if (m_PV <= 0)
+    {
+        m_isDead = true;
+        m_PointsVie = 0;
         return;
     }
 
@@ -69,6 +86,8 @@ void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
         if (m_translate < dist.first)
         {
             glTranslatef(m_translate * step, 0, 0);
+            m_TargetPosition = {m_Position.first + (int((m_translate * step)) % int(_viewSize)), m_Position.second};
+            // Log::Debug("TargetPosition : " + std::to_string(m_TargetPosition.first) + " " + std::to_string(m_TargetPosition.second));
         }
         else
         {
@@ -84,6 +103,8 @@ void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
         if (m_translate < dist.second)
         {
             glTranslatef(0, m_translate * step, 0);
+            m_TargetPosition = {m_Position.first, m_Position.second + (int(m_translate * step) % int(_viewSize))};
+            // Log::Debug("TargetPosition : " + std::to_string(m_TargetPosition.first) + " " + std::to_string(m_TargetPosition.second));
         }
         else
         {
@@ -98,14 +119,4 @@ void Target::move(Map map, std::unordered_map<std::string, GLuint> textures)
     draw_quad_with_texture(textures[m_texture_file]);
     // draw_quad();
     glPopMatrix();
-}
-
-void Target::attaque(int power)
-{
-    m_PointsVie -= power;
-    // Log::Debug("PV : " + std::to_string(m_PointsVie));
-    if (m_PointsVie <= 0)
-    {
-        m_isDead = true;
-    }
 }

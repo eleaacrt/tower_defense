@@ -34,17 +34,18 @@ void UserInterface::load_life_bar(int lifes_max, int lifes, std::unordered_map<s
 
 void UserInterface::load_money(int &_width, int &_height, float viewSize, int money, std::unordered_map<std::string, GLuint> textures)
 {
-    glPushMatrix();
-    glTranslatef(((map.m_Width / 2) - 3), (map.m_Height / 2) + 2, 0);
-    glScalef(1, 1, 1);
-    draw_quad_with_texture(textures["piece.png"]);
-    glPopMatrix();
+    // glPushMatrix();
+    // glTranslatef(((map.m_Width / 2) - 3), (map.m_Height / 2) + 2, 0);
+    // glScalef(1, 1, 1);
+    // draw_quad_with_texture(textures["piece.png"]);
+    // glPopMatrix();
 
-    const char *money_str = std::to_string(money).c_str();
+    std::string money_str = "Money : " + std::to_string(money) + " $";
+    const char *money_c_str = money_str.c_str();
     SimpleText TextRenderer{};
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_48);
-    TextRenderer.Label(money_str, (_width / 2) + (viewSize * map.m_Width / 2), ((_height / 2) - (viewSize * map.m_Height / 2)) - (2 * viewSize), SimpleText::CENTER);
+    TextRenderer.Label(money_c_str, 100, 300, SimpleText::LEFT);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
@@ -56,6 +57,17 @@ void UserInterface::game_over(int &_width, int &_height, std::unordered_map<std:
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_160);
     TextRenderer.Label("Game Over :(", _width / 2, (_height / 2), SimpleText::CENTER);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
+}
+
+void UserInterface::win(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures)
+{
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_160);
+    TextRenderer.Label("Victory !", _width / 2, (_height / 2), SimpleText::CENTER);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
@@ -118,4 +130,34 @@ void UserInterface::towers_to_select(int &_width, int &_height, std::unordered_m
     // glTranslatef(0, 1.5, 0);
     // draw_quad_with_texture(textures["tower2.png"]);
     // glPopMatrix();
+}
+
+void UserInterface::load_infos_targets(std::vector<Target> targets, int app_current_monster_index)
+{
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_48);
+    for (int i = 0; i < app_current_monster_index; i++)
+    {
+        std::string pv_str = "pv : " + std::to_string(targets[i].m_PointsVie);
+        const char *pv = pv_str.c_str();
+        // Log::Debug("Target : " + targets[i].m_Type + " " + std::to_string(targets[i].m_Position.first) + " " + std::to_string(targets[i].m_Position.second) + " PV : " + std::to_string(targets[i].m_PointsVie));
+        TextRenderer.Label(pv, 100, 400 + (i * 50), SimpleText::LEFT);
+    }
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
+}
+
+void UserInterface::show_level(int level)
+{
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_64);
+    std::string level_str = "Level : " + std::to_string(level);
+    const char *level_c_str = level_str.c_str();
+    TextRenderer.Label(level_c_str, 100, 200, SimpleText::LEFT);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
 }

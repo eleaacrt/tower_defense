@@ -21,7 +21,15 @@ App::App() : _previousTime(0.0), _viewSize(25)
     lifes_max = 5;
     cursor_pos = std::make_pair(0, 0);
     ItdTower.read_itd_tower("data/itd_tower.itd");
-    money = 25;
+    money = 100;
+    towers = {};
+    nb_towers = ItdTower.allTowers.size();
+    selected_tower = -1;
+    is_a_tower_selected = false;
+    app_current_monster_index = 0;
+    nb_targets_arrived_and_dead = waves.Waves[0].size();
+    id_current_wave = 0;
+    total_number_of_waves = waves.Waves.size();
 }
 
 void App::Load_Textures()
@@ -67,7 +75,7 @@ void App::setup()
     Log::Debug("Graph created");
     map.get_shorter_path();
     Wave waves;
-    AllTowers all_towers;
+    // AllTowers all_towers;
 }
 
 void App::update()
@@ -79,8 +87,7 @@ void App::update()
     _angle += 1.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
 
-    all_towers.check_targets(waves.Waves[0], _width, _height, _viewSize, map.m_Width, map.m_Height);
-    waves.update(map);
+    waves.update(map, app_current_monster_index, id_current_wave);
 
     render();
 }
@@ -95,29 +102,61 @@ void App::render()
     glLoadIdentity();
 
     // Log::Debug("lifes " + std::to_string(waves.lifes));
-    int nb_targets_arrived = waves.get_number_of_target_arrived();
+    int nb_targets_arrived = waves.get_number_of_target_arrived(id_current_wave);
+    int nb_targets_dead = waves.get_number_of_target_dead(id_current_wave);
 
-    if ((lifes_max - nb_targets_arrived) <= 0)
+    if (nb_targets_dead + nb_targets_arrived == waves.Waves[id_current_wave].size())
     {
-        // glClearColor((132.f / 255.f), (163.f / 255.f), (10.f / 255.f), 0.0f);
-        // game over
-        // afficher game over
-        // afficher score
-        // afficher bouton pour rejouer
-        // afficher bouton pour quitter
+        if (id_current_wave == (total_number_of_waves -1))
+        {
+            glClearColor((82.f / 255.f), (113.f / 255.f), (0.f / 255.f), 0.0f);
+            ui.win(_width, _height, textures);
+        }
+        else
+        {
+            id_current_wave++;
+            app_current_monster_index = 0;
+            towers.clear();
+        }
+    }
+
+    else if ((lifes_max - nb_targets_arrived) <= 0)
+    {
         glClearColor((82.f / 255.f), (113.f / 255.f), (0.f / 255.f), 0.0f);
         ui.game_over(_width, _height, textures);
     }
+
     else
     {
         map.draw(map.tiles, textures);
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
         ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
-        all_towers.load_all_towers(textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
-        all_towers.select_a_tower(cursor_pos, textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
-        waves.load(map, textures);
+        ui.show_level(id_current_wave + 1);
 
-        // ui.load_money(_width, _height, _viewSize, money, textures);
+        // INITIALISER LES VAGUES
+
+        ui.load_infos_targets(waves.Waves[id_current_wave], app_current_monster_index);
+
+        for (size_t i = 0; i < towers.size(); i++)
+        {
+            towers[i].check_targets(waves.Waves[id_current_wave], _width, _height, _viewSize, map.m_Width, map.m_Height, glfwGetTime(), money);
+        }
+
+        if (towers.size() > 0)
+        {
+            for (size_t i = 0; i < towers.size(); i++)
+            {
+                towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
+            }
+        }
+
+        if (selected_tower >= 0 && is_a_tower_selected)
+        {
+            ItdTower.allTowers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
+        }
+
+        waves.load(map, textures, _viewSize, app_current_monster_index, id_current_wave);
+        ui.load_money(_width, _height, _viewSize, money, textures);
 
         // all_towers.attack();
 
@@ -169,24 +208,26 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
-        if (all_towers.is_a_tower_selected && all_towers.selected_tower >= 0)
+        if (is_a_tower_selected && selected_tower >= 0 && money - ItdTower.allTowers[selected_tower].m_Cost >= 0)
         {
-            ItdTower.allTowers[all_towers.selected_tower].m_Position = std::make_pair(xpos, ypos);
-            all_towers.towers.push_back(ItdTower.allTowers[all_towers.selected_tower]);
-            all_towers.selected_tower = -1;
-            all_towers.is_a_tower_selected = false;
+            money -= ItdTower.allTowers[selected_tower].m_Cost;
+            ItdTower.allTowers[selected_tower].m_Position = std::make_pair(xpos, ypos);
+            towers.push_back(ItdTower.allTowers[selected_tower]);
+            selected_tower = -1;
+            is_a_tower_selected = false;
         }
 
-        for (int i = 0; i < all_towers.nb_towers; i++)
+        for (int i = 0; i < nb_towers; i++)
         {
             // Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
             if (xpos < ui.get_tower_positions[i].first.first && xpos > ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].second.second && ypos < ui.get_tower_positions[i].first.second)
             {
                 // Log::Debug("Tower selected: " + std::to_string(i));
-                all_towers.selected_tower = i;
-                all_towers.is_a_tower_selected = true;
+                selected_tower = i;
+                is_a_tower_selected = true;
             }
         }
+
     }
 }
 

@@ -10,7 +10,7 @@ targets 2
 # id 0 dans la vague
 type GHOST
 pv 50
-speed 3
+speed 2
 value 30
 texture ghost.png
 

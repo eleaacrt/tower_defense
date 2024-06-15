@@ -33,6 +33,18 @@ public:
     int _width, _height;
     std::pair<int, int> cursor_pos;
 
+    std::vector<Tower> towers;
+    bool is_a_tower_selected;
+    int selected_tower;
+    int nb_towers;
+
+    int nb_targets_arrived_and_dead;
+
+    int app_current_monster_index;
+
+    int id_current_wave;
+    int total_number_of_waves;
+
 private:
     void render();
 
@@ -45,12 +57,11 @@ private:
     Map map;
     Wave waves;
     ItdTower ItdTower;
-    AllTowers all_towers;
+    // AllTowers all_towers;
     UserInterface ui;
     int lifes_max;
 
     // map de textures
     std::unordered_map<std::string, GLuint> textures{};
-
     SimpleText TextRenderer{};
 };
