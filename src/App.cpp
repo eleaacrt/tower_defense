@@ -63,11 +63,11 @@ void App::setup()
     // Set the clear color to a nice blue
     glClearColor((182.f / 255.f), (213.f / 255.f), (60.f / 255.f), 0.0f);
 
-    // Setup the text renderer with blending enabled and white text color
-    // TextRenderer.ResetFont();
-    // TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
-    // TextRenderer.SetColorf(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
-    // TextRenderer.EnableBlending(true);
+    TextRenderer.ResetFont();
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, SimpleText::Color::BLUE);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, SimpleText::Color::WHITE);
+
+    TextRenderer.EnableBlending(true);
 
     map.tiles = map.get_Tiles();
     Load_Textures();
@@ -158,37 +158,8 @@ void App::render()
 
         waves.load(map, textures, _viewSize, app_current_monster_index, id_current_wave);
         ui.load_money(_width, _height, _viewSize, money, textures);
-
-        // all_towers.attack();
-
-        // Log::Debug(std::to_string(towers.size()));
-        // if (towers.size() > 0)
-        // {
-        //     for (size_t i = 0; i < towers.size(); i++)
-        //     {
-        //         towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map.m_Width, map.m_Width);
-        //     }
-        // }
-        // Log::Debug("Selected tower: " + std::to_string(selected_tower));
     }
 }
-
-// TextRenderer.Label("Example of using SimpleText library", _width / 2, 20, SimpleText::CENTER);
-
-// Without set precision
-// const std::string angle_label_text { "Angle: " + std::to_string(_angle) };
-// With c++20 you can use std::format
-// const std::string angle_label_text { std::format("Angle: {:.2f}", _angle) };
-
-// Using stringstream to format the string with fixed precision
-// std::string angle_label_text {};
-// std::stringstream stream {};
-// stream << std::fixed << "Angle: " << std::setprecision(2) << _angle;
-// angle_label_text = stream.str();
-
-// TextRenderer.Label(angle_label_text.c_str(), _width / 2, _height - 4, SimpleText::CENTER);
-
-// TextRenderer.Render();
 
 void App::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
@@ -212,15 +183,12 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
         int windowWidth, windowHeight;
         glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
-        // (2 fois xpos / window width - 1 ) * aspectratio
-        // 1 - (2 fois ypos / window height )
-
         const float aspectRatio{windowWidth / static_cast<float>(windowHeight)};
         xpos = ((2 * xpos / windowWidth - 1) * aspectRatio);
         ypos = (1 - 2 * ypos / windowHeight);
 
-        xpos *= _viewSize;
-        ypos *= _viewSize;
+        xpos *= (_viewSize) / 2;
+        ypos *= (_viewSize) / 2;
 
         // normalisé sur les 25 px de hauteur
         cursor_pos = std::make_pair(xpos, ypos);
@@ -262,17 +230,14 @@ void App::cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
     int windowWidth, windowHeight;
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
-    // (2 fois xpos / window width - 1 ) * aspectratio
-    // 1 - (2 fois ypos / window height )
     const float aspectRatio{windowWidth / static_cast<float>(windowHeight)};
 
     xpos = ((2 * xpos / windowWidth - 1) * aspectRatio);
     ypos = (1 - 2 * ypos / windowHeight);
 
-    xpos *= _viewSize;
-    ypos *= _viewSize;
+    xpos *= (_viewSize) / 2;
+    ypos *= (_viewSize) / 2;
 
-    // normalisé sur les 25 px de hauteur
     cursor_pos = std::make_pair(xpos, ypos);
 
     // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));

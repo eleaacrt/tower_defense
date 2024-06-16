@@ -31,26 +31,26 @@ void Tower::initTower(ItdTower itd_tower, std::pair<int, int> position, int id_t
 void Tower::loadTower(std::pair<int, int> position, std::unordered_map<std::string, GLuint> textures, int _width, int _height, float viewSize, int map_width, int map_height)
 {
 
-    if (position.first >= (map_width))
+    if (position.first >= (map_width / 2))
     {
-        position.first = (map_width)-1;
+        position.first = (map_width / 2) - 1;
     }
-    if (position.first <= -(map_width))
+    if (position.first <= -(map_width / 2))
     {
-        position.first = -(map_width);
+        position.first = -(map_width / 2);
     }
 
-    if (position.second >= map_height)
+    if (position.second >= (map_height / 2))
     {
-        position.second = (map_height);
+        position.second = (map_height / 2);
     }
-    if (position.second <= -(map_height))
+    if (position.second <= -(map_height / 2))
     {
-        position.second = -(map_height);
+        position.second = -(map_height / 2);
     }
 
     glPushMatrix();
-    glTranslatef((position.first) / 2, position.second / 2, 0);
+    glTranslatef(position.first, position.second, 0);
     draw_quad_with_texture(textures[m_TextureFile]);
     glPopMatrix();
 }
@@ -62,7 +62,7 @@ void Tower::check_targets(std::vector<Target> &Waves, int _width, int _height, f
     {
         // Log::Debug("wave[i] :" + Waves[i].m_Type);
         std::pair<float, float> target_position = {(Waves[i].m_TargetPosition.first) - (map_width / 2), (Waves[i].m_TargetPosition.second) - (map_height / 2)};
-        std::pair<float, float> tower_position = {m_Position.first / 2, m_Position.second / 2};
+        std::pair<float, float> tower_position = {m_Position.first, m_Position.second};
         Log::Debug("tower position " + std::to_string(tower_position.first) + ", " + std::to_string(tower_position.second));
         Log::Debug("wave[i].position " + std::to_string(target_position.first) + ", " + std::to_string(target_position.second));
         float distance = sqrt(pow(target_position.first - tower_position.first, 2) + pow(target_position.second - tower_position.second, 2));
