@@ -15,7 +15,7 @@ public:
     UserInterface();
     ~UserInterface(){};
 
-    void load_life_bar(int lifes_max, int lifes, std::unordered_map<std::string, GLuint> textures);
+    void load_life_bar(int lifes_max, int all_lifes, int lifes, std::unordered_map<std::string, GLuint> textures, bool &is_game_over);
     void load_money(int &_width, int &_height, float viewSize, int money, std::unordered_map<std::string, GLuint> textures);
     void game_over(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures);
     void win(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures);

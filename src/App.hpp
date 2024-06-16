@@ -39,11 +39,14 @@ public:
     int nb_towers;
 
     int nb_targets_arrived_and_dead;
+    int nb_all_targets_arrived;
 
     int app_current_monster_index;
 
     int id_current_wave;
     int total_number_of_waves;
+
+    bool is_game_over;
 
 private:
     void render();

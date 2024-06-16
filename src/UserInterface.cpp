@@ -11,11 +11,13 @@ UserInterface::UserInterface()
     get_tower_positions = {};
 }
 
-void UserInterface::load_life_bar(int lifes_max, int lifes, std::unordered_map<std::string, GLuint> textures)
+void UserInterface::load_life_bar(int lifes_max, int all_lifes, int lifes, std::unordered_map<std::string, GLuint> textures, bool &is_game_over)
 {
     glPushMatrix();
     glTranslatef(-(map.m_Width / 2), (map.m_Height / 2) + 2, 0);
     glScalef(1, 1.1, 1);
+
+    lifes = all_lifes + lifes;
 
     for (int i = 0; i < lifes_max; i++)
     {
@@ -30,6 +32,11 @@ void UserInterface::load_life_bar(int lifes_max, int lifes, std::unordered_map<s
         glTranslatef(1.2, 0, 0);
     }
     glPopMatrix();
+
+    if (lifes == lifes_max)
+    {
+        is_game_over = true;
+    }
 }
 
 void UserInterface::load_money(int &_width, int &_height, float viewSize, int money, std::unordered_map<std::string, GLuint> textures)
@@ -57,6 +64,8 @@ void UserInterface::game_over(int &_width, int &_height, std::unordered_map<std:
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_160);
     TextRenderer.Label("Game Over :(", _width / 2, (_height / 2), SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::SIZE_32);
+    TextRenderer.Label("click on [esc] to quit", _width / 2, (_height / 2) + 50, SimpleText::CENTER);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
@@ -69,7 +78,8 @@ void UserInterface::pause(int &_width, int &_height)
     TextRenderer.SetTextSize(SimpleText::SIZE_160);
     TextRenderer.Label("Pause", _width / 2, (_height / 2), SimpleText::CENTER);
     TextRenderer.SetTextSize(SimpleText::SIZE_32);
-    TextRenderer.Label("click on [space] to restart", _width / 2, (_height / 2) + 50, SimpleText::CENTER);
+    TextRenderer.Label("click on [esc] to quit", _width / 2, (_height / 2) + 50, SimpleText::CENTER);
+    TextRenderer.Label("click on [space] to restart", _width / 2, (_height / 2) + 100, SimpleText::CENTER);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
@@ -81,6 +91,8 @@ void UserInterface::win(int &_width, int &_height, std::unordered_map<std::strin
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_160);
     TextRenderer.Label("Victory !", _width / 2, (_height / 2), SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::SIZE_32);
+    TextRenderer.Label("click on [esc] to quit", _width / 2, (_height / 2) + 50, SimpleText::CENTER);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();

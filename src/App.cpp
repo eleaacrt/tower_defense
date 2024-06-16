@@ -32,6 +32,8 @@ App::App() : _previousTime(0.0), _viewSize(25)
     total_number_of_waves = waves.Waves.size();
     pause = false;
     ItdMap.read_itd_map("data/itd_map.itd");
+    nb_all_targets_arrived = 0;
+    is_game_over = false;
 }
 
 void App::Load_Textures()
@@ -117,7 +119,6 @@ void App::render()
     {
         if (id_current_wave == (total_number_of_waves - 1))
         {
-            glClearColor((82.f / 255.f), (113.f / 255.f), (0.f / 255.f), 0.0f);
             ui.win(_width, _height, textures);
         }
         else
@@ -126,12 +127,12 @@ void App::render()
             waves.currentMonsterIndex = 0;
             app_current_monster_index = 0;
             towers.clear();
+            nb_all_targets_arrived += nb_targets_arrived;
         }
     }
 
-    else if ((lifes_max - nb_targets_arrived) <= 0)
+    else if (is_game_over)
     {
-        glClearColor((82.f / 255.f), (113.f / 255.f), (0.f / 255.f), 0.0f);
         ui.game_over(_width, _height, textures);
     }
 
@@ -139,7 +140,7 @@ void App::render()
     {
         map.draw(map.tiles, textures);
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
-        ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
+        ui.load_life_bar(lifes_max, nb_all_targets_arrived, nb_targets_arrived, textures, is_game_over);
         ui.show_level(id_current_wave + 1);
         ui.controle_text(_width, _height);
 
