@@ -42,34 +42,47 @@ void UserInterface::load_money(int &_width, int &_height, float viewSize, int mo
 
     std::string money_str = "Money : " + std::to_string(money) + " $";
     const char *money_c_str = money_str.c_str();
-    // SimpleText TextRenderer{};
-    // TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
-    // TextRenderer.SetTextSize(SimpleText::SIZE_32);
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_32);
     TextRenderer.Label(money_c_str, 100, 150, SimpleText::LEFT);
-    // TextRenderer.EnableBlending(true);
-    // TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
 }
 
 void UserInterface::game_over(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures)
 {
-    // SimpleText TextRenderer{};
-    // TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
-    // TextRenderer.SetTextSize(SimpleText::SIZE_160);
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_160);
     TextRenderer.Label("Game Over :(", _width / 2, (_height / 2), SimpleText::CENTER);
-    // TextRenderer.EnableBlending(true);
-    // TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
+}
+
+void UserInterface::pause(int &_width, int &_height)
+{
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_160);
+    TextRenderer.Label("Pause", _width / 2, (_height / 2), SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::SIZE_32);
+    TextRenderer.Label("click on [space] to restart", _width / 2, (_height / 2) + 50, SimpleText::CENTER);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
 }
 
 void UserInterface::win(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures)
 {
-    // SimpleText TextRenderer{};
-    // TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
-    // TextRenderer.SetTextSize(SimpleText::SIZE_160);
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_160);
     TextRenderer.Label("Victory !", _width / 2, (_height / 2), SimpleText::CENTER);
-    // TextRenderer.EnableBlending(true);
-    // TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
 }
 
@@ -114,8 +127,8 @@ void UserInterface::towers_to_select(int &_width, int &_height, std::unordered_m
 
 void UserInterface::load_infos_targets(std::vector<Target> targets, int app_current_monster_index)
 {
-    // SimpleText TextRenderer{};
-    // TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_16);
     for (int i = 0; i < app_current_monster_index; i++)
     {
@@ -124,20 +137,32 @@ void UserInterface::load_infos_targets(std::vector<Target> targets, int app_curr
         // Log::Debug("Target : " + targets[i].m_Type + " " + std::to_string(targets[i].m_Position.first) + " " + std::to_string(targets[i].m_Position.second) + " PV : " + std::to_string(targets[i].m_PointsVie));
         TextRenderer.Label(pv, 100, 200 + (i * 20), SimpleText::LEFT);
     }
-    // TextRenderer.EnableBlending(true);
-    // TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
 }
 
 void UserInterface::show_level(int level)
 {
-    // SimpleText TextRenderer{};
-    // TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_32);
     std::string level_str = "Level : " + std::to_string(level);
     const char *level_c_str = level_str.c_str();
     TextRenderer.Label(level_c_str, 100, 100, SimpleText::LEFT);
-    // TextRenderer.EnableBlending(true);
-    // TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
+}
+
+void UserInterface::controle_text(int &_width, int &_height)
+{
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_16);
+    TextRenderer.Label("click on [esc] to quit", _width / 2, _height - 200, SimpleText::CENTER);
+    TextRenderer.Label("click on [space] to pause", _width / 2, _height - 175, SimpleText::CENTER);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
 }

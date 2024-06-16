@@ -81,13 +81,13 @@ void Tile::draw(std::unordered_map<std::string, GLuint> textures)
     if (m_Type == TypeTile::HORIZONTAL)
     {
         // BLANC
+        glRotatef(90, 0, 0, 1);
         draw_quad_with_texture(textures["path.png"]);
         // draw_quad_with_texture(m_path_texture);
     }
     if (m_Type == TypeTile::VERTICAL)
     {
         // GRIS
-        glRotatef(90, 0, 0, 1);
         draw_quad_with_texture(textures["path.png"]);
         // draw_quad_with_texture(m_path_texture);
     }

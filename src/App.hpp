@@ -57,9 +57,12 @@ private:
     Map map;
     Wave waves;
     ItdTower ItdTower;
+    ItdMap ItdMap;
     // AllTowers all_towers;
     UserInterface ui;
     int lifes_max;
+
+    bool pause;
 
     // map de textures
     std::unordered_map<std::string, GLuint> textures{};

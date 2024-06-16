@@ -30,6 +30,8 @@ App::App() : _previousTime(0.0), _viewSize(25)
     nb_targets_arrived_and_dead = waves.Waves[0].size();
     id_current_wave = 0;
     total_number_of_waves = waves.Waves.size();
+    pause = false;
+    ItdMap.read_itd_map("data/itd_map.itd");
 }
 
 void App::Load_Textures()
@@ -61,7 +63,7 @@ void App::Load_Textures()
 void App::setup()
 {
     // Set the clear color to a nice blue
-    glClearColor((182.f / 255.f), (213.f / 255.f), (60.f / 255.f), 0.0f);
+    glClearColor((165.f / 255.f), (81.f / 255.f), (172.f / 255.f), 0.0f);
 
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, SimpleText::Color::BLUE);
@@ -105,7 +107,13 @@ void App::render()
     int nb_targets_arrived = waves.get_number_of_target_arrived(id_current_wave);
     int nb_targets_dead = waves.get_number_of_target_dead(id_current_wave);
 
-    if (nb_targets_dead + nb_targets_arrived == waves.Waves[id_current_wave].size())
+    if (pause)
+    {
+        // map.draw(map.tiles, textures);
+        ui.pause(_width, _height);
+    }
+
+    else if (nb_targets_dead + nb_targets_arrived == waves.Waves[id_current_wave].size())
     {
         if (id_current_wave == (total_number_of_waves - 1))
         {
@@ -133,6 +141,7 @@ void App::render()
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
         ui.load_life_bar(lifes_max, nb_targets_arrived, textures);
         ui.show_level(id_current_wave + 1);
+        ui.controle_text(_width, _height);
 
         // INITIALISER LES VAGUES
 
@@ -147,13 +156,13 @@ void App::render()
         {
             for (size_t i = 0; i < towers.size(); i++)
             {
-                towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
+                towers[i].loadTower(towers[i].m_Position, textures, _width, _height, _viewSize, map);
             }
         }
 
         if (selected_tower >= 0 && is_a_tower_selected)
         {
-            ItdTower.allTowers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize, map.m_Width, map.m_Height);
+            ItdTower.allTowers[selected_tower].loadTower(cursor_pos, textures, _width, _height, _viewSize, map);
         }
 
         waves.load(map, textures, _viewSize, app_current_monster_index, id_current_wave);
@@ -169,7 +178,8 @@ void App::key_callback(GLFWwindow *window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
-        // stopper le jeu
+        // pause the game
+        pause = !pause;
     }
 }
 
@@ -194,8 +204,7 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
         cursor_pos = std::make_pair(xpos, ypos);
 
         // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
-
-        if (is_a_tower_selected && selected_tower >= 0 && money - ItdTower.allTowers[selected_tower].m_Cost >= 0)
+        if (is_a_tower_selected && selected_tower >= 0)
         {
             money -= ItdTower.allTowers[selected_tower].m_Cost;
             ItdTower.allTowers[selected_tower].m_Position = std::make_pair(xpos, ypos);
@@ -206,14 +215,17 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
 
         for (int i = 0; i < nb_towers; i++)
         {
-            Log::Debug("-------------------");
-            Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
-            Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
-            if (xpos > ui.get_tower_positions[i].first.first && xpos < ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].first.second && ypos < ui.get_tower_positions[i].second.second)
+            // Log::Debug("-------------------");
+            // Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
+            // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+            if ((xpos > ui.get_tower_positions[i].first.first && xpos < ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].first.second && ypos < ui.get_tower_positions[i].second.second))
             {
-                Log::Debug("Tower selected: " + std::to_string(i));
-                selected_tower = i;
-                is_a_tower_selected = true;
+                if (money >= ItdTower.allTowers[i].m_Cost)
+                {
+                    Log::Debug("Tower selected: " + std::to_string(i));
+                    selected_tower = i;
+                    is_a_tower_selected = true;
+                }
             }
         }
     }

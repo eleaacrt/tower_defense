@@ -9,7 +9,7 @@ type PISE
 power 5
 range 2
 speed 4
-cost 20
+cost 50
 texture tower1.png
 
 # id 1 dans la liste des tours
