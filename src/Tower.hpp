@@ -24,7 +24,7 @@ public:
     // portée de la tour
     int m_Range;
     // vitesse de tir
-    float m_ShotSpeed;
+    int m_ShotSpeed;
     // coût de la tour
     int m_Cost;
     // texture file

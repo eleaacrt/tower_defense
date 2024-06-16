@@ -17,6 +17,6 @@ texture ghost.png
 # id 1 dans la vague
 type ZOMBIE
 pv 20
-speed 5
+speed 3
 value 10
 texture zombie.png

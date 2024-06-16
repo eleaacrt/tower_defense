@@ -31,7 +31,7 @@ public:
     int money;
 
     int _width, _height;
-    std::pair<int, int> cursor_pos;
+    std::pair<float, float> cursor_pos;
 
     std::vector<Tower> towers;
     bool is_a_tower_selected;

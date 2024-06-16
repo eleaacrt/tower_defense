@@ -107,7 +107,7 @@ void App::render()
 
     if (nb_targets_dead + nb_targets_arrived == waves.Waves[id_current_wave].size())
     {
-        if (id_current_wave == (total_number_of_waves -1))
+        if (id_current_wave == (total_number_of_waves - 1))
         {
             glClearColor((82.f / 255.f), (113.f / 255.f), (0.f / 255.f), 0.0f);
             ui.win(_width, _height, textures);
@@ -115,6 +115,7 @@ void App::render()
         else
         {
             id_current_wave++;
+            waves.currentMonsterIndex = 0;
             app_current_monster_index = 0;
             towers.clear();
         }
@@ -208,6 +209,24 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
+        int windowWidth, windowHeight;
+        glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+        // (2 fois xpos / window width - 1 ) * aspectratio
+        // 1 - (2 fois ypos / window height )
+
+        const float aspectRatio{windowWidth / static_cast<float>(windowHeight)};
+        xpos = ((2 * xpos / windowWidth - 1) * aspectRatio);
+        ypos = (1 - 2 * ypos / windowHeight);
+
+        xpos *= _viewSize;
+        ypos *= _viewSize;
+
+        // normalisé sur les 25 px de hauteur
+        cursor_pos = std::make_pair(xpos, ypos);
+
+        // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+
         if (is_a_tower_selected && selected_tower >= 0 && money - ItdTower.allTowers[selected_tower].m_Cost >= 0)
         {
             money -= ItdTower.allTowers[selected_tower].m_Cost;
@@ -219,15 +238,16 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
 
         for (int i = 0; i < nb_towers; i++)
         {
-            // Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
-            if (xpos < ui.get_tower_positions[i].first.first && xpos > ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].second.second && ypos < ui.get_tower_positions[i].first.second)
+            Log::Debug("-------------------");
+            Log::Debug("Tower position: " + std::to_string(ui.get_tower_positions[i].first.first) + ", " + std::to_string(ui.get_tower_positions[i].first.second) + ", " + std::to_string(ui.get_tower_positions[i].second.first) + ", " + std::to_string(ui.get_tower_positions[i].second.second));
+            Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
+            if (xpos > ui.get_tower_positions[i].first.first && xpos < ui.get_tower_positions[i].second.first && ypos > ui.get_tower_positions[i].first.second && ypos < ui.get_tower_positions[i].second.second)
             {
-                // Log::Debug("Tower selected: " + std::to_string(i));
+                Log::Debug("Tower selected: " + std::to_string(i));
                 selected_tower = i;
                 is_a_tower_selected = true;
             }
         }
-
     }
 }
 
@@ -238,36 +258,46 @@ void App::scroll_callback(double xoffset, double yoffset)
 void App::cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
 {
     glfwGetCursorPos(window, &xpos, &ypos);
+
+    int windowWidth, windowHeight;
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+    // (2 fois xpos / window width - 1 ) * aspectratio
+    // 1 - (2 fois ypos / window height )
+    const float aspectRatio{windowWidth / static_cast<float>(windowHeight)};
+
+    xpos = ((2 * xpos / windowWidth - 1) * aspectRatio);
+    ypos = (1 - 2 * ypos / windowHeight);
+
+    xpos *= _viewSize;
+    ypos *= _viewSize;
+
+    // normalisé sur les 25 px de hauteur
     cursor_pos = std::make_pair(xpos, ypos);
+
     // Log::Debug("Mouse position: " + std::to_string(xpos) + ", " + std::to_string(ypos));
 }
 
 void App::size_callback(GLFWwindow *window, int width, int height)
 {
-    // DEUX FOIS PLUS GRAND QUE SOUS WINDOWS
+    //(écran rétina) On associe les dimensions de la fenêtre au FrameBuffer
     _width = width;
     _height = height;
 
-    // Log::Debug("Width: " + std::to_string(_width) + " Height: " + std::to_string(_height));
-
-    // make sure the viewport matches the new window dimensions
+    glfwGetFramebufferSize(window, &_width, &_height);
     glViewport(0, 0, _width, _height);
 
-    const float aspectRatio{_width / (float)_height};
+    const float aspectRatio{_width / static_cast<float>(_height)};
 
     // Change the projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if (aspectRatio > 1.0f)
     {
-        glOrtho(
-            -_viewSize / 2. * aspectRatio, _viewSize / 2. * aspectRatio,
-            -_viewSize / 2., _viewSize / 2., -1.0, 1.0);
+        glOrtho(-_viewSize / 2.0f * aspectRatio, _viewSize / 2.0f * aspectRatio, -_viewSize / 2.0f, _viewSize / 2.0f, -1.0f, 1.0f);
     }
     else
     {
-        glOrtho(
-            -_viewSize / 2., _viewSize / 2.,
-            -_viewSize / 2. / aspectRatio, _viewSize / 2. / aspectRatio, -1.0, 1.0);
+        glOrtho(-_viewSize / 2.0f, _viewSize / 2.0f, -_viewSize / 2.0f / aspectRatio, _viewSize / 2.0f / aspectRatio, -1.0f, 1.0f);
     }
 }
