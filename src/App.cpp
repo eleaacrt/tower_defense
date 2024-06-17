@@ -21,7 +21,7 @@ App::App() : _previousTime(0.0), _viewSize(25)
     lifes_max = 5;
     cursor_pos = std::make_pair(0, 0);
     ItdTower.read_itd_tower("data/itd_tower.itd");
-    money = 100;
+    money = 150;
     towers = {};
     nb_towers = ItdTower.allTowers.size();
     selected_tower = -1;

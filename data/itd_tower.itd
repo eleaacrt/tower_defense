@@ -7,8 +7,8 @@ towers 2
 # id 0 dans la liste des tours
 type PISE
 power 4
-range 2
-speed 1
+range 4
+speed 2
 cost 40
 texture tower1.png
 
@@ -16,6 +16,6 @@ texture tower1.png
 type EIFFEL
 power 2
 range 2
-speed 3
+speed 1
 cost 20
 texture tower2.png
