@@ -114,12 +114,12 @@ void UserInterface::towers_to_select(int &_width, int &_height, std::unordered_m
         draw_quad_with_texture(textures[tower_str]);
         glPopMatrix();
 
-        float pos_x_1 = (-(map.m_Width)) - 0.5;
+        float pos_x_1 = (-4 * (map.m_Width) / 5) - 0.5;
         float pos_y_1 = (i * 4) - 0.5;
         // Log::Debug("Position : x1 : " + std::to_string(pos_x_1) + ", x2 : " + std::to_string(pos_y_1));
         std::pair pos_1 = std::make_pair(pos_x_1, pos_y_1);
 
-        float pos_x_2 = (-(map.m_Width)) + 0.5;
+        float pos_x_2 = (-4 * (map.m_Width) / 5) + 0.5;
         float pos_y_2 = (i * 4) + 0.5;
         // Log::Debug("Position : x1 : " + std::to_string(pos_x_2) + ", x2 : " + std::to_string(pos_y_2));
         std::pair pos_2 = std::make_pair(pos_x_2, pos_y_2);
