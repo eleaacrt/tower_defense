@@ -3,8 +3,10 @@ ITD
 # nombre de vagues
 # nb targets, id targets
 
-waves 3
+waves 5
 
-wave 4 1 1 1 1
-wave 3 0 1 1
 wave 2 1 1
+wave 3 0 1 1
+wave 4 0 0 1 1
+wave 5 0 0 0 0 1
+wave 10 1 1 1 0 0 1 0 0 1 0

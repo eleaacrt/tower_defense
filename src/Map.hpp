@@ -42,6 +42,7 @@ public:
     void get_shorter_path();
     std::vector<std::vector<Node>> all_shorter_path;
     void create_graph();
+    void draw_background(std::unordered_map<std::string, GLuint> textures);
 
     int m_Width;
     int m_Height;

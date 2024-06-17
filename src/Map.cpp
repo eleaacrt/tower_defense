@@ -255,3 +255,12 @@ void Map::get_shorter_path()
         all_shorter_path.push_back(shorter_path);
     }
 }
+
+void Map::draw_background(std::unordered_map<std::string, GLuint> textures)
+{
+    glPushMatrix();
+    // glTranslatef(-(m_Width / 2), -(m_Height / 2), 0);
+    glScalef(m_Width, m_Height, 1);
+    draw_quad_with_texture(textures["fond.png"]);
+    glPopMatrix();
+}

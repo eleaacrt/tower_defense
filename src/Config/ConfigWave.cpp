@@ -46,7 +46,6 @@ bool ItdWave::read_itd_wave(std::string const &fileName)
         int nbWaves = std::stoi(myString.substr(6));
 
         Log::Debug("nbWaves : " + std::to_string(nbWaves));
-
         Waves.clear();
 
         for (int i = 0; i < nbWaves; i++)
@@ -74,14 +73,14 @@ bool ItdWave::read_itd_wave(std::string const &fileName)
         }
 
         // debug
-        for (auto &wave : Waves)
-        {
-            Log::Debug("WAVE : ");
-            for (auto &target : wave)
-            {
-                Log::Debug(target.m_Type + ", PV : " + std::to_string(target.m_PointsVie) + ", Speed : " + std::to_string(target.m_Speed) + ", Value : " + std::to_string(target.m_Value));
-            }
-        }
+        // for (auto &wave : Waves)
+        // {
+        //     Log::Debug("WAVE : ");
+        //     for (auto &target : wave)
+        //     {
+        //         Log::Debug(target.m_Type + ", PV : " + std::to_string(target.m_PointsVie) + ", Speed : " + std::to_string(target.m_Speed) + ", Value : " + std::to_string(target.m_Value));
+        //     }
+        // }
     }
     else
     {

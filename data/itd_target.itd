@@ -9,13 +9,13 @@ targets 2
 
 # id 0 dans la vague
 type GHOST
-pv 50
+pv 40
 speed 2
 value 30
 texture ghost1.png
 
 # id 1 dans la vague
-type ZOMBIE
+type GHOST2
 pv 20
 speed 3
 value 10

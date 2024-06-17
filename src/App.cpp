@@ -65,7 +65,7 @@ void App::Load_Textures()
 void App::setup()
 {
     // Set the clear color to a nice blue
-    glClearColor((165.f / 255.f), (81.f / 255.f), (172.f / 255.f), 0.0f);
+    glClearColor((27.f / 255.f), (17.f / 255.f), (44.f / 255.f), 0.0f);
 
     TextRenderer.ResetFont();
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, SimpleText::Color::BLUE);
@@ -138,6 +138,7 @@ void App::render()
 
     else
     {
+        map.draw_background(textures);
         map.draw(map.tiles, textures);
         ui.towers_to_select(_width, _height, textures, ItdTower, _viewSize);
         ui.load_life_bar(lifes_max, nb_all_targets_arrived, nb_targets_arrived, textures, is_game_over);
@@ -223,7 +224,7 @@ void App::mouse_button_callback(GLFWwindow *window, int button, int action, int 
             {
                 if (money >= ItdTower.allTowers[i].m_Cost)
                 {
-                    Log::Debug("Tower selected: " + std::to_string(i));
+                    // Log::Debug("Tower selected: " + std::to_string(i));
                     selected_tower = i;
                     is_a_tower_selected = true;
                 }

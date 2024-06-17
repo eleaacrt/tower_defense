@@ -106,19 +106,21 @@ void UserInterface::towers_to_select(int &_width, int &_height, std::unordered_m
     for (size_t i = 0; i < ItdTower.allTowers.size(); i++)
     {
         glPushMatrix();
-        glTranslatef(0, (i * 2), 0);
-        glScalef(1, 1, 1);
+        glTranslatef(0, (i * 4), 0);
+        glScalef(3, 3, 1);
 
-        draw_quad_with_texture(textures[ItdTower.allTowers[i].m_TextureFile]);
+        std::string tower_str = "tower" + std::to_string(i + 1) + "_wprice.png";
+
+        draw_quad_with_texture(textures[tower_str]);
         glPopMatrix();
 
         float pos_x_1 = (-(map.m_Width)) - 0.5;
-        float pos_y_1 = (i * 2) - 0.5;
+        float pos_y_1 = (i * 4) - 0.5;
         // Log::Debug("Position : x1 : " + std::to_string(pos_x_1) + ", x2 : " + std::to_string(pos_y_1));
         std::pair pos_1 = std::make_pair(pos_x_1, pos_y_1);
 
         float pos_x_2 = (-(map.m_Width)) + 0.5;
-        float pos_y_2 = (i * 2) + 0.5;
+        float pos_y_2 = (i * 3) + 0.5;
         // Log::Debug("Position : x1 : " + std::to_string(pos_x_2) + ", x2 : " + std::to_string(pos_y_2));
         std::pair pos_2 = std::make_pair(pos_x_2, pos_y_2);
 
@@ -172,8 +174,8 @@ void UserInterface::controle_text(int &_width, int &_height)
     SimpleText TextRenderer{};
     TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
     TextRenderer.SetTextSize(SimpleText::SIZE_16);
-    TextRenderer.Label("click on [esc] to quit", _width / 2, _height - 200, SimpleText::CENTER);
-    TextRenderer.Label("click on [space] to pause", _width / 2, _height - 175, SimpleText::CENTER);
+    TextRenderer.Label("click on [esc] to quit", _width / 2, _height - 25, SimpleText::CENTER);
+    TextRenderer.Label("click on [space] to pause", _width / 2, _height - 50, SimpleText::CENTER);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
