@@ -15,7 +15,7 @@ void UserInterface::load_life_bar(int lifes_max, int all_lifes, int lifes, std::
 {
     glPushMatrix();
     glTranslatef(-(map.m_Width / 2), (map.m_Height / 2) + 2, 0);
-    glScalef(1, 1.1, 1);
+    glScalef(1, 1, 1);
 
     lifes = all_lifes + lifes;
 
@@ -101,7 +101,7 @@ void UserInterface::win(int &_width, int &_height, std::unordered_map<std::strin
 void UserInterface::towers_to_select(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures, ItdTower ItdTower, float _viewSize)
 {
     glPushMatrix();
-    glTranslatef(-(map.m_Width), 0, 0);
+    glTranslatef(-4 * (map.m_Width) / 5, 0, 0);
 
     for (size_t i = 0; i < ItdTower.allTowers.size(); i++)
     {
@@ -120,7 +120,7 @@ void UserInterface::towers_to_select(int &_width, int &_height, std::unordered_m
         std::pair pos_1 = std::make_pair(pos_x_1, pos_y_1);
 
         float pos_x_2 = (-(map.m_Width)) + 0.5;
-        float pos_y_2 = (i * 3) + 0.5;
+        float pos_y_2 = (i * 4) + 0.5;
         // Log::Debug("Position : x1 : " + std::to_string(pos_x_2) + ", x2 : " + std::to_string(pos_y_2));
         std::pair pos_2 = std::make_pair(pos_x_2, pos_y_2);
 
