@@ -180,3 +180,28 @@ void UserInterface::controle_text(int &_width, int &_height)
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();
 }
+
+void UserInterface::start(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures)
+{
+    SimpleText TextRenderer{};
+    TextRenderer.SetColor(SimpleText::BACKGROUND_COLOR, 0.f, 0.f, 0.f, 0.f);
+    TextRenderer.SetTextSize(SimpleText::SIZE_160);
+    TextRenderer.Label("FANTOMAAAAS", _width / 2, (_height / 2) - 25, SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::SIZE_32);
+    TextRenderer.Label("click on [enter] to start", _width / 2, (_height / 2) + 25, SimpleText::CENTER);
+    TextRenderer.Label("text here", _width / 2, (_height / 2) + 100, SimpleText::CENTER);
+    TextRenderer.EnableBlending(true);
+    TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
+    TextRenderer.Render();
+
+    glPushMatrix();
+    glTranslatef(map.m_Width + (map.m_Width / 6), 0, 0);
+    glScalef(4, 4, 4);
+    draw_quad_with_texture(textures["ghost1.png"]);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(-map.m_Width - (map.m_Width / 6), 0, 0);
+    glScalef(4, 4, 4);
+    draw_quad_with_texture(textures["ghost2.png"]);
+    glPopMatrix();
+}

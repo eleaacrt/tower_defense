@@ -34,6 +34,7 @@ App::App() : _previousTime(0.0), _viewSize(25)
     ItdMap.read_itd_map("data/itd_map.itd");
     nb_all_targets_arrived = 0;
     is_game_over = false;
+    start = false;
 }
 
 void App::Load_Textures()
@@ -91,7 +92,10 @@ void App::update()
     _angle += 1.0f * elapsedTime;
     // _angle = std::fmod(_angle, 360.0f);
 
-    waves.update(map, app_current_monster_index, id_current_wave);
+    if (start && !pause)
+    {
+        waves.update(map, app_current_monster_index, id_current_wave);
+    }
 
     render();
 }
@@ -109,7 +113,12 @@ void App::render()
     int nb_targets_arrived = waves.get_number_of_target_arrived(id_current_wave);
     int nb_targets_dead = waves.get_number_of_target_dead(id_current_wave);
 
-    if (pause)
+    if (!start)
+    {
+        ui.start(_width, _height, textures);
+    }
+
+    else if (pause)
     {
         // map.draw(map.tiles, textures);
         ui.pause(_width, _height);
@@ -182,6 +191,11 @@ void App::key_callback(GLFWwindow *window, int key, int scancode, int action, in
     {
         // pause the game
         pause = !pause;
+    }
+    if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+    {
+        // start the game
+        start = true;
     }
 }
 

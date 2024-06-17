@@ -66,6 +66,7 @@ private:
     int lifes_max;
 
     bool pause;
+    bool start;
 
     // map de textures
     std::unordered_map<std::string, GLuint> textures{};

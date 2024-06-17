@@ -20,6 +20,7 @@ public:
     void game_over(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures);
     void win(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures);
     void pause(int &_width, int &_height);
+    void start(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures);
     void towers_to_select(int &_width, int &_height, std::unordered_map<std::string, GLuint> textures, ItdTower ItdTower, float viewSize);
     void show_level(int level);
     void controle_text(int &_width, int &_height);
