@@ -189,7 +189,11 @@ void UserInterface::start(int &_width, int &_height, std::unordered_map<std::str
     TextRenderer.Label("FANTOMAAAAS", _width / 2, (_height / 2) - 25, SimpleText::CENTER);
     TextRenderer.SetTextSize(SimpleText::SIZE_32);
     TextRenderer.Label("click on [enter] to start", _width / 2, (_height / 2) + 25, SimpleText::CENTER);
-    TextRenderer.Label("text here", _width / 2, (_height / 2) + 100, SimpleText::CENTER);
+    TextRenderer.SetTextSize(SimpleText::SIZE_16);
+    TextRenderer.Label("Strange silhouettes seem to float in the stars in search of your precious crystals...", _width / 2, (_height / 2) + 100, SimpleText::CENTER);
+    TextRenderer.Label("Between shadow and light, place your towers strategically ", _width / 2, (_height / 2) + 120, SimpleText::CENTER);
+    TextRenderer.Label("and eliminate the ghosts to protect your treasure! ", _width / 2, (_height / 2) + 140, SimpleText::CENTER);
+    TextRenderer.Label("But remember, ghosts are greedy, so be very careful with your money...", _width / 2, (_height / 2) + 200, SimpleText::CENTER);
     TextRenderer.EnableBlending(true);
     TextRenderer.SetColor(SimpleText::TEXT_COLOR, 1.f, 0.f, 0.f, 1.f);
     TextRenderer.Render();

@@ -9,7 +9,6 @@
 #include "Map.hpp"
 #include "Wave.hpp"
 #include "UserInterface.hpp"
-#include "AllTowers.hpp"
 
 class App
 {
