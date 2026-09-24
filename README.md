@@ -1,6 +1,10 @@
 # RAPPORT DE PROJET
 Eléa CRUNCHANT & Angèle DOUET
 
+---
+<img width="1874" height="1276" alt="image" src="https://github.com/user-attachments/assets/8fe377df-e09f-4d6d-9463-c9abed06c530" />
+---
+
 ## INTRODUCTION
 Dans le cadre du deuxième semestre de notre première année à l’IMAC, nous avons à l'occasion de réaliser un projet de jeu. Ce projet alliait les deux modules  Programmation et Algorithmique ainsi que Synthèse d’Image.
 
