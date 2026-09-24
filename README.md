@@ -3,6 +3,7 @@ Eléa CRUNCHANT & Angèle DOUET
 
 ---
 <img width="1874" height="1276" alt="image" src="https://github.com/user-attachments/assets/8fe377df-e09f-4d6d-9463-c9abed06c530" />
+
 ---
 
 ## INTRODUCTION
